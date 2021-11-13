@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IReview.sol";
 import "./Course.sol";
 
-contract Review is Ownable, IReview {
+abstract contract Review is Ownable, IReview {
     uint256 public courseCount;
     mapping(address => address[]) public bootcamps;
 

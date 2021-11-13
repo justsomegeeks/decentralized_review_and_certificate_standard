@@ -18,7 +18,7 @@ export const WalletProvider = ({ children }: ProviderProps) => {
   const [provider, setProvider] = React.useState<JsonRpcProvider>();
   React.useEffect(() => {
     async function init() {
-      const _provider = await getProvider();
+      const _provider = (await getProvider()) as any as JsonRpcProvider;
       setProvider(_provider);
     }
     init();
