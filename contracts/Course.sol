@@ -2,13 +2,14 @@
 pragma solidity ^0.8.0;
 import "hardhat/console.sol";
 
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/MerkleProofUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-contract Course is Initializable, Ownable {
+
+contract Course is Initializable, OwnableUpgradeable {
     // EVENTS
     event Graduate(bytes32 merkelProof, string courseCID);
 
@@ -22,6 +23,7 @@ contract Course is Initializable, Ownable {
         initializer
     {
         courseCID = _courseCID;
+        __Ownable_init();
         transferOwnership(_owner);
     }
 
@@ -31,7 +33,7 @@ contract Course is Initializable, Ownable {
         bytes32 root
     ) external view returns (bool) {
         require(bytes(graduations[root]).length > 0, "Root not found");
-        return MerkleProof.verify(proof, root, leaf);
+        return MerkleProofUpgradeable.verify(proof, root, leaf);
     }
 
     // TODO: only owner should be allowed to call this function.
