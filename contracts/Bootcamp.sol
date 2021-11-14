@@ -23,10 +23,11 @@ contract Bootcamp is Ownable {
         courseImplementationAddress = _courseImplementationAddress;
     }
 
-    function createCourse(string memory _courseCID) external onlyOwner {
+    function createCourse(string memory _courseCID) external onlyOwner returns(address){
         address cloneAddress = Clones.clone(courseImplementationAddress);
         Course(cloneAddress).initialize(_courseCID, owner());
         emit CourseCreated(cloneAddress, _courseCID);
+        return cloneAddress;
     }
 
     function getImplementationAddress() external view returns (address) {

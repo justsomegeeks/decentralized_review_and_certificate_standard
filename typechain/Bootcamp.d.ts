@@ -208,12 +208,15 @@ export class Bootcamp extends Contract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    createCourse(_courseCID: string, overrides?: CallOverrides): Promise<void>;
+    createCourse(
+      _courseCID: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     "createCourse(string)"(
       _courseCID: string,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<string>;
 
     getImplementationAddress(overrides?: CallOverrides): Promise<string>;
 

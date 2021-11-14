@@ -6,3 +6,5 @@ artifacts
 frontend/src/hardhat
 
 .env
+
+.idea
