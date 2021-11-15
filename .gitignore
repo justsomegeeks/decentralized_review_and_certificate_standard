@@ -8,3 +8,5 @@ frontend/src/hardhat
 .env
 
 .idea
+
+typechain/
