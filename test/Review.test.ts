@@ -116,9 +116,9 @@ describe("Review", async () => {
 
     bootcampCourse = await BootcampCourse.attach(courseAddress);
 
-    await expect(review.addCourse(bootcampCourse.address, courseAddress))
-      .to.emit(review, "NewCourse")
-      .withArgs(bootcampCourse.address, courseAddress);
+    await expect(review.addBootcamp(bootcampCourse.address))
+      .to.emit(review, "NewBootcamp")
+      .withArgs(bootcampCourse.address);
   });
   it("should fail if duplicate course is being added", async () => {
     const clonedContractAddress =
@@ -140,8 +140,8 @@ describe("Review", async () => {
 
     bootcampCourse = await BootcampCourse.attach(courseAddress);
 
-    await expect(
-      review.addCourse(bootcampCourse.address, courseAddress)
-    ).to.revertedWith("Already Exists");
+    await expect(review.addBootcamp(bootcampCourse.address)).to.revertedWith(
+      "Already Exists"
+    );
   });
 });

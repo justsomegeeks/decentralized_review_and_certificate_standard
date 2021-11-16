@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 import "./IReview.sol";
@@ -9,32 +8,23 @@ import "./Course.sol";
 
 contract Review is Ownable {
     uint256 public courseCount;
-    mapping(address => address[]) public bootcamps;
+    address[] public bootcamps;
 
-    function _courseExists(address bootcamp, address course)
-        internal
-        view
-        returns (bool)
-    {
-        address[] memory courses = bootcamps[bootcamp];
-        for (uint256 i = 0; i < courses.length; i++) {
-            if (courses[i] == course) {
+    function _bootcampExists(address bootcamp) internal view returns (bool) {
+        address[] memory _bootcamps = bootcamps;
+        for (uint256 i = 0; i < _bootcamps.length; i++) {
+            if (_bootcamps[i] == bootcamp) {
                 return true;
             }
         }
         return false;
     }
 
-    function addCourse(address courseAddress, address bootcamp) external {
-        require(!_courseExists(bootcamp, courseAddress), "Already Exists");
+    function addBootcamp(address bootcamp) external {
+        require(!_bootcampExists(bootcamp), "Already Exists");
+        bootcamps.push(bootcamp);
 
-        if (bootcamps[bootcamp].length == 0) {
-            bootcamps[bootcamp] = [courseAddress];
-        } else {
-            bootcamps[bootcamp].push(courseAddress);
-        }
-
-        emit NewCourse(bootcamp, courseAddress);
+        emit NewBootcamp(bootcamp);
     }
 
     function reviewCourse(
@@ -56,7 +46,7 @@ contract Review is Ownable {
         emit NewReview(courseAddress, msg.sender, reviewCID, rating);
     }
 
-    event NewCourse(address indexed bootcamp, address courseAddress);
+    event NewBootcamp(address indexed bootcamp);
 
     event NewReview(
         address indexed course,

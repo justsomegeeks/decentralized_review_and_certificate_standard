@@ -12,6 +12,7 @@ contract Bootcamp is Ownable {
     // TODO: Should this be string or bytes32 for saving gas?
     string public name;
     string public location;
+    address[] public courses;
 
     constructor(
         address _courseImplementationAddress,
@@ -23,14 +24,23 @@ contract Bootcamp is Ownable {
         courseImplementationAddress = _courseImplementationAddress;
     }
 
-    function createCourse(string memory _courseCID) external onlyOwner returns(address){
+    function createCourse(string memory _courseCID)
+        external
+        onlyOwner
+        returns (address)
+    {
         address cloneAddress = Clones.clone(courseImplementationAddress);
         Course(cloneAddress).initialize(_courseCID, owner());
+        courses.push(cloneAddress);
         emit CourseCreated(cloneAddress, _courseCID);
         return cloneAddress;
     }
 
     function getImplementationAddress() external view returns (address) {
         return courseImplementationAddress;
+    }
+
+    function getCourses() external view returns (address[] memory) {
+        return courses;
     }
 }
