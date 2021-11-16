@@ -3,6 +3,5 @@
 ## Instruction
 
 - install dependencies (npm install)
-- npx hardhat node
-- npx hardhat run scripts/deploy.js --network localhost
+- npx hardhat --network localhost deploy
 - npm run frontend

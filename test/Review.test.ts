@@ -26,6 +26,8 @@ describe("Review", async () => {
   let signer1: SignerWithAddress;
   const CID =
     "0x9F86D081884C7D659A2FEAA0C55AD015A3BF4F1B2B0B822CD15D6C15B0F00A08";
+  const RATING = ethers.utils.parseUnits("5", 2);
+  console.log(RATING.toNumber());
 
   before(async () => {
     [deployer, signer1] = await ethers.getSigners();
@@ -52,6 +54,7 @@ describe("Review", async () => {
     await bootcamp.deployed();
 
     students = await ethers.provider.listAccounts();
+
     merkleTree = new MerkleTree(students, keccak256, {
       hashLeaves: true,
       sortPairs: true,
@@ -86,9 +89,11 @@ describe("Review", async () => {
       .withArgs(root, CID);
 
     await expect(
-      review.connect(signer1).reviewCourse(courseAddress, CID, proof, root)
+      review
+        .connect(signer1)
+        .reviewCourse(courseAddress, CID, RATING, proof, root)
     )
       .to.emit(review, "NewReview")
-      .withArgs(await signer1.getAddress(), CID);
+      .withArgs(courseAddress, await signer1.getAddress(), CID, RATING);
   });
 });

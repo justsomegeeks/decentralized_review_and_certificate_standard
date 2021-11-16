@@ -1,8 +1,8 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-ethers";
-// import "hardhat-deploy-ethers";
-// import "hardhat-deploy";
+import "hardhat-deploy-ethers";
+import "hardhat-deploy";
 import "hardhat-typechain";
 import "@typechain/ethers-v5";
 import { getInfuraKey, getPrivateKey } from "./helpers/env_helpers";
@@ -15,7 +15,7 @@ const config: HardhatUserConfig = {
     hardhat: {
       chainId: 31337,
       accounts: {
-        mnemonic: "test test test test test test test test test test test junk", // test test test test test test test test test test test junk
+        mnemonic: "test test test test test test test test test test test junk",
       },
     },
     mainnet: {

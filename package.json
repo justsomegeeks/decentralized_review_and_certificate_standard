@@ -1,6 +1,5 @@
 {
   "name": "hardhat-project",
-  "type": "module",
   "devDependencies": {
     "@ethersproject/contracts": "^5.5.0",
     "@nomiclabs/hardhat-ethers": "^2.0.0",
@@ -15,7 +14,7 @@
     "@typescript-eslint/eslint-plugin": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "chai": "^4.2.0",
-    "eslint": "^8.2.0",
+    "eslint": "7.11",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.25.3",
     "ethereum-waffle": "^3.2.0",
