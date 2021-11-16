@@ -96,4 +96,52 @@ describe("Review", async () => {
       .to.emit(review, "NewReview")
       .withArgs(courseAddress, await signer1.getAddress(), CID, RATING);
   });
+  it("should add a course and emit NewCourse Event", async () => {
+    const clonedContractAddress =
+      "0x" +
+      keccak256(ethers.utils.RLP.encode([bootcamp.address, "0x01"]))
+        .toString("hex")
+        .slice(-40);
+    const clonedContractAddressWithChecksum = ethers.utils.getAddress(
+      clonedContractAddress
+    );
+
+    await bootcamp.createCourse(CID);
+    const courseAddress = clonedContractAddressWithChecksum;
+    const BootcampCourse = (await ethers.getContractAt(
+      "Course",
+      courseAddress,
+      signer1
+    )) as unknown as Course__factory;
+
+    bootcampCourse = await BootcampCourse.attach(courseAddress);
+
+    await expect(review.addCourse(bootcampCourse.address, courseAddress))
+      .to.emit(review, "NewCourse")
+      .withArgs(bootcampCourse.address, courseAddress);
+  });
+  it("should fail if duplicate course is being added", async () => {
+    const clonedContractAddress =
+      "0x" +
+      keccak256(ethers.utils.RLP.encode([bootcamp.address, "0x01"]))
+        .toString("hex")
+        .slice(-40);
+    const clonedContractAddressWithChecksum = ethers.utils.getAddress(
+      clonedContractAddress
+    );
+
+    await bootcamp.createCourse(CID);
+    const courseAddress = clonedContractAddressWithChecksum;
+    const BootcampCourse = (await ethers.getContractAt(
+      "Course",
+      courseAddress,
+      signer1
+    )) as unknown as Course__factory;
+
+    bootcampCourse = await BootcampCourse.attach(courseAddress);
+
+    await expect(
+      review.addCourse(bootcampCourse.address, courseAddress)
+    ).to.revertedWith("Already Exists");
+  });
 });

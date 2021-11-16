@@ -26,7 +26,7 @@ contract Review is Ownable {
     }
 
     function addCourse(address courseAddress, address bootcamp) external {
-        require(!_courseExists(bootcamp, courseAddress));
+        require(!_courseExists(bootcamp, courseAddress), "Already Exists");
 
         if (bootcamps[bootcamp].length == 0) {
             bootcamps[bootcamp] = [courseAddress];
