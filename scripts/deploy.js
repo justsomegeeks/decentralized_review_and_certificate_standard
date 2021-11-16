@@ -9,7 +9,7 @@ async function main() {
   course = await Course.deploy();
 
   const Bootcamp = await hre.ethers.getContractFactory("Bootcamp");
-  bootcamp = await Bootcamp.deploy(course.address, 'Bootcamp', 'US');
+  bootcamp = await Bootcamp.deploy(course.address, "Bootcamp", "US");
 
   await greeter.deployed();
 
