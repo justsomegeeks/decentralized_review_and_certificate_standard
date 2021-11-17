@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-import "./IReview.sol";
 import "./Course.sol";
 
 contract Review is Ownable {
