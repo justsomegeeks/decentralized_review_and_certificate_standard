@@ -3,5 +3,6 @@
 ## Instruction
 
 - install dependencies (npm install)
-- npx hardhat node && npx hardhat --network localhost deploy (for redeployment)
+- npx hardhat node (for running local node and initial deployment)
 - npm run frontend
+- npx hardhat --network localhost deploy (for redeployment)
