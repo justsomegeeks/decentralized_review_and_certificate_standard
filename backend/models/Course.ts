@@ -1,17 +1,16 @@
 import mongoose from "mongoose";
-
-const Course = new mongoose.Schema({
+type course = {
+  cid: string;
+  address: string
+}
+const Course = new mongoose.Schema<course>({
   cid: {
     type: String,
     unique: true,
   },
   address: {
     type: String,
-  },
-  bootcamp: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Bootcamp",
-  },
+  }
 });
 
 export default mongoose.models.Course || mongoose.model("Course", Course);

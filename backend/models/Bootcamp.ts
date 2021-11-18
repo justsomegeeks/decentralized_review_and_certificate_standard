@@ -1,6 +1,17 @@
 import mongoose from "mongoose";
 
-const Bootcamp = new mongoose.Schema({
+
+type Bootcamp = {
+  cid: string;
+  address: string;
+  description: string;
+  location:string;
+  courses: mongoose.Schema.Types.ObjectId;
+  reviews: mongoose.Schema.Types.ObjectId;
+  rating: number;
+};
+
+const Bootcamp = new mongoose.Schema<Bootcamp>({
   cid: {
     type: String,
     unique: true,
@@ -8,6 +19,18 @@ const Bootcamp = new mongoose.Schema({
   address: {
     type: String,
   },
+  description: {
+    type: String,
+  },
+  location: {
+    type: String,
+  },
+  courses: [{type: mongoose.Schema.Types.ObjectId, ref: 'Course'}],
+
+  reviews: [{type: mongoose.Schema.Types.ObjectId, ref: 'Review'}],
+
+}, {
+  collection: "Bootcamps"
 });
 
 export default mongoose.models.Bootcamp || mongoose.model("Bootcamp", Bootcamp);

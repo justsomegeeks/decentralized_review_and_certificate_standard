@@ -1,38 +1,36 @@
 import express, { Response, Request } from "express";
+import Bootcamp from "../models/Bootcamp"
 
 const router = express.Router();
 
 // GET ALL BOOTCAMPS
 router.get("/bootcamps", (_: Request, res: Response) => {
-  // TODO: Fetch all bootcamps from mongoose database and respond
-  return res.json({
-    request: "Get bootcamps",
-  });
+  const bootcamps = Bootcamp.find({}).populate("courses").populate("reviews").exec();
+    return res.json({
+      request: bootcamps,
+    });
 });
 
 // GET BOOTCAMP DETAILS
-router.get("/bootcamps/:bootcampAddress", (_: Request, res: Response) => {
+router.get("/bootcamps/:bootcampAddress", async (req: Request, res: Response) => {
   // TODO: Return details of a bootcamp
-  //   Calculate average rating from reviews modal
-  type Bootcamp = {
-    uri: string;
-    // Wallet address
-    address: string;
-    rating: number;
-  };
+  const bootcamp = await Bootcamp.findOne({ address: req.params.bootcampAddress })
+    .populate("courses")
+    .populate("reviews")
+    .exec();
+
   return res.json({
-    request: "Get bootcamp details",
+    request: bootcamp,
   });
 });
 
 // GET BOOTCAMP REVIEWS
 router.get(
   "/bootcamps/:bootcampAddress/reviews",
-  (_: Request, res: Response) => {
-    // TODO: Return reviews of a bootcamp
-    // Filter reviews with bootcampAddress
+  async (req: Request, res: Response) => {
+    const bootcamp = await Bootcamp.findOne({address: req.params.bootcampAddress})
     return res.json({
-      request: "Get reviews",
+      request: bootcamp.reviews,
     });
   }
 );
@@ -40,11 +38,10 @@ router.get(
 // GET BOOTCAMP COURSES
 router.get(
   "/bootcamps/:bootcampAddress/courses",
-  (_: Request, res: Response) => {
-    // TODO: Return reviews of a bootcamp
-    // Filter courses with bootcamp address
+  async (req: Request, res: Response) => {
+    const bootcamp = await Bootcamp.findOne({address: req.params.bootcampAddress})
     return res.json({
-      request: "get courses",
+      request: bootcamp.courses,
     });
   }
 );

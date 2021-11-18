@@ -3,9 +3,9 @@ import ethers from "ethers";
 import { config } from "dotenv";
 
 // ARTIFACTS
-import courseArtifact from "./artifacts/Course.json";
-import bootcampArtifact from "./artifacts/Bootcamp.json";
-import reviewArtifact from "./artifacts/Review.json";
+import courseArtifact from "../artifacts/contracts/Course.sol/Course.json";
+import bootcampArtifact from "../artifacts/contracts/Bootcamp.sol/Bootcamp.json";
+import reviewArtifact from "../artifacts/contracts/Review.sol/Review.json";
 
 // HELPERS
 import {
