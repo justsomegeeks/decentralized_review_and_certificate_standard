@@ -32,12 +32,16 @@ describe("Bootcamp", async () => {
       "Bootcamp",
       signer1
     )) as unknown as Bootcamp__factory;
-    bootcamp = await Bootcamp.deploy(course.address, "Bootcamp", "US");
+    bootcamp = await Bootcamp.deploy(
+      course.address,
+      "QmRSrcFg6vn3rrU1yuQ8pGJQ1eJy2wRtPuPLncrsPhd1P8"
+    );
     await bootcamp.deployed();
   });
-  it("Should return correct 'Name' and 'location'", async () => {
-    expect(await bootcamp.name()).to.equal("Bootcamp");
-    expect(await bootcamp.location()).to.equal("US");
+  it("Should return correct 'CID'", async () => {
+    expect(await bootcamp.cid()).to.equal(
+      "QmRSrcFg6vn3rrU1yuQ8pGJQ1eJy2wRtPuPLncrsPhd1P8"
+    );
   });
 
   it("Should return correct Course Implementation Address", async () => {

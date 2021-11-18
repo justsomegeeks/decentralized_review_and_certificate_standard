@@ -5,7 +5,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Course.sol";
 
 contract Review is Ownable {
-    uint256 public courseCount;
     address[] public bootcamps;
 
     function _bootcampExists(address bootcamp) internal view returns (bool) {

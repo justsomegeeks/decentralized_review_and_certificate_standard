@@ -17,6 +17,7 @@ specifiers:
   '@types/node': ^14.14.9
   '@typescript-eslint/eslint-plugin': ^5.4.0
   '@typescript-eslint/parser': ^5.4.0
+  axios: ^0.24.0
   babel-eslint: ^10.1.0
   chai: ^4.2.0
   dotenv: ^10.0.0
@@ -47,6 +48,7 @@ dependencies:
   '@types/cors': 2.8.12
   '@types/express': 4.17.13
   '@types/fs-extra': 9.0.12
+  axios: 0.24.0
   babel-eslint: 10.1.0_eslint@7.11.0
   dotenv: 10.0.0
   fs-extra: 10.0.0
@@ -1860,6 +1862,14 @@ packages:
     transitivePeerDependencies:
       - debug
     dev: true
+
+  /axios/0.24.0:
+    resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
+    dependencies:
+      follow-redirects: 1.14.5
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /babel-code-frame/6.26.0:
     resolution: {integrity: sha1-Y/1D99weO7fONZR9uP42mj9Yx0s=}
@@ -4620,6 +4630,16 @@ packages:
     dependencies:
       debug: 4.3.2
     dev: true
+
+  /follow-redirects/1.14.5:
+    resolution: {integrity: sha512-wtphSXy7d4/OR+MvIFbCVBDzZ5520qV8XfPklSN5QtxuMUJZ+b0Wnst1e1lCDocfzuCkHqj8k0FpZqO+UIaKNA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
+    dev: false
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}

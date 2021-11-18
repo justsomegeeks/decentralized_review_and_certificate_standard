@@ -10,8 +10,7 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const Bootcamp = await hre.ethers.getContractFactory("Bootcamp");
   const bootcamp = await Bootcamp.deploy(
     course.address,
-    "Chainshot",
-    "New York"
+    "QmRSrcFg6vn3rrU1yuQ8pGJQ1eJy2wRtPuPLncrsPhd1P8"
   );
 
   const Review = await hre.ethers.getContractFactory("Review");

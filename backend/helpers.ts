@@ -1,10 +1,13 @@
 // import ethers from "ethers";
+import { create } from "ipfs-http-client";
 
 import Block from "./models/Block";
 import Bootcamp from "./models/Bootcamp";
 import Review from "./models/Review";
 import Course from "./models/Course";
 import Graduate from "./models/Graduate";
+
+const IPFS = create({ url: "https://infura.io:5001" });
 
 export const emptyDatabase = async () => {
   try {
@@ -14,34 +17,136 @@ export const emptyDatabase = async () => {
     console.log("Couldn't delete data!");
   }
 };
-export const handleNewBootcamp = async (bootcampAddress: string) => {
+
+type BootcampProps = {
+  bootcampAddress: string;
+  name: string;
+  location: string;
+};
+
+export const handleNewBootcamp = async ({
+  bootcampAddress,
+  name,
+  location,
+}: BootcampProps) => {
   // TODO: record when new course is added to review protocol
   // TODO: Fetch ipfs with cid and write it to the database for consumption
 };
-export const handleNewReview = async (
-  courseAddress,
+
+type ReviewProps = {
+  bootcampAddress: string;
+  courseAddress: string;
+  reviewer: string;
+  reviewCID: string;
+  rating: number;
+};
+export const handleNewReview = async ({
+  bootcampAddress,
   reviewer,
-  reviewURI,
-  rating
-) => {
-  // TODO: record when new review is submitted
-  // TODO: Fetch ipfs with cid and write it to the database for consumption
+  reviewCID,
+  rating,
+}: ReviewProps) => {
+  // TODO: Fetch Details from CID
+
+  try {
+    const review = await Review.create({
+      cid: reviewCID,
+      reviewer,
+      overallRating: rating,
+    });
+    await Bootcamp.findOneAndUpdate(
+      { address: bootcampAddress },
+      { $push: { reviews: review } },
+      { new: true, upsert: true }
+    );
+  } catch (err) {
+    console.log(err);
+  }
 };
 
-export const handleGraduate = async (proof: string, graduateCID: string) => {
-  // TODO: record event args to database when graduation is done.
+type GraduateProps = {
+  bootcampAddress: string;
+  courseAddress: string;
+  proof: string;
+  graduationCID: string;
 };
 
-export const handleNewCourse = async (
-  courseAddress: string,
-  courseCID: string
-) => {
-  // TODO: record event args to database when new Course is created in a bootcamp
+export const handleGraduate = async ({
+  proof,
+  graduationCID,
+  bootcampAddress,
+  courseAddress,
+}: GraduateProps) => {
+  // TODO: Add Graduation details to database
+  const bootcamp = await Bootcamp.findOne({ address: bootcampAddress });
+  const course = await Course.findOne({ address: courseAddress });
+  if (bootcamp && course) {
+    try {
+      // Save graduation details
+      const graduation = await Graduate.create({
+        cid: graduationCID,
+        address: courseAddress,
+        proof,
+        bootcamp: bootcampAddress,
+      });
+
+      // Update course graduations details
+      await Course.findOneAndUpdate(
+        { bootcamp, address: course },
+        { $push: { graduations: graduation } },
+        { upsert: true, new: true }
+      );
+    } catch (err) {
+      console.log(err);
+    }
+  } else {
+    if (!course) {
+      console.log("Course Not found");
+      throw new Error("Course Not Found");
+    } else {
+      console.log("Bootcamp Not found");
+      throw new Error("Bootcamp Not Found");
+    }
+  }
 };
 
-export const updateBlock = async (blockNumber) => {
+type CourseProps = {
+  courseAddress: string;
+  courseCID: string;
+  bootcampAddress: string;
+};
+
+export const handleNewCourse = async ({
+  courseAddress,
+  courseCID,
+  bootcampAddress,
+}: CourseProps) => {
+  const bootcamp = await Bootcamp.findOne({ address: bootcampAddress });
+  if (bootcamp) {
+    try {
+      const course = await Course.create({
+        address: courseAddress,
+        cid: courseCID,
+        bootcamp: bootcamp,
+      });
+      await Bootcamp.findOneAndUpdate(
+        { address: bootcampAddress },
+        { $push: { courses: course } },
+        { new: true, upsert: true }
+      );
+    } catch (err) {
+      console.log("DB error");
+      console.log(err);
+    }
+  } else {
+    throw new Error("Bootcamp not found");
+  }
+};
+
+export const updateBlock = async (blockNumber: number) => {
   try {
     //   Checking if we are running server for the first time
+    // TODO: Update Block Number with your deployed address block
     if (blockNumber === 16947958) {
       await Block.create({ name: "LastRecorded", number: blockNumber });
     } else {

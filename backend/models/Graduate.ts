@@ -6,12 +6,16 @@ const Graduate = new mongoose.Schema(
       type: String,
       unique: true,
     },
-    address: {
+    proof: {
       type: String,
     },
     course: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Course",
+    },
+    bootcamp: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Bootcamp",
     },
   },
   { timestamps: true }
