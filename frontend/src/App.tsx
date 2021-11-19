@@ -43,15 +43,7 @@ function App() {
 
         <div className="h-full text-center">
           <Switch>
-            <Route exact path="/">
-              <h1 className="mt-10 text-xl font-bold">
-                A Hardhat, React, Typescript, Tailwindcss boilerplate for DAAP
-                development.
-              </h1>
-              <GreeterProvider>
-                <Greeter />
-              </GreeterProvider>
-            </Route>
+            <Route exact path="/"></Route>
           </Switch>
         </div>
         <Footer />

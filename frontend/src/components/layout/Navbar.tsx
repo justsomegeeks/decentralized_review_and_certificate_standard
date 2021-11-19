@@ -1,5 +1,4 @@
-import React, { ReactElement } from "react";
-import { Link } from "react-router-dom";
+import React, { ReactElement, useState } from "react";
 import { useMessage } from "../../context/MessageContext";
 import { useTransaction } from "../../context/TransactionContext";
 import { useWallet } from "../../context/WalletContext";
@@ -8,11 +7,13 @@ import { getSignerAddress } from "../../provider";
 import Button from "../Button";
 import CircularLoader from "../CircularLoader";
 import GlobalMessage from "../GlobalMessage";
+import { Link } from "react-router-dom";
 
 export default function Navbar(): ReactElement {
   const { pending } = useTransaction();
   const { walletAddress, setWalletAddress } = useWallet();
   const { setGlobalMessage } = useMessage();
+
   const handleConnect = async () => {
     const ethereum = (window as any).ethereum;
     if (ethereum) {
@@ -38,49 +39,66 @@ export default function Navbar(): ReactElement {
       // }
     }
   };
+
   return (
     <div>
       <div
         className={joinClasses(
           "py-4",
-          "border-b-2",
+          "shadow-md",
           "flex",
-          "justify-between",
+          "justify-around",
           "items-center"
         )}
       >
         <div id="brand" className="inline-flex">
-          <svg
-            width="25"
-            height="25"
-            viewBox="0 0 256 417"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="xMidYMid"
-          >
-            <path
-              fill="#2298bd"
-              d="M127.961 0l-2.795 9.5v275.668l2.795 2.79 127.962-75.638z"
-            />
-            <path
-              fill="#0ed7b5"
-              d="M127.962 0L0 212.32l127.962 75.639V154.158z"
-            />
-            <path
-              fill="#2298bd"
-              d="M127.961 312.187l-1.575 1.92v98.199l1.575 4.6L256 236.587z"
-            />
-            <path fill="#0ed7b5" d="M127.962 416.905v-104.72L0 236.585z" />
-            <path
-              fill="#1a7e9c"
-              d="M127.961 287.958l127.96-75.637-127.96-58.162z"
-            />
-            <path fill="#2298bd" d="M0 212.32l127.96 75.638v-133.8z" />
-          </svg>
-          <Link to="/">
-            <h2 className="ml-4 text-lg font-medium">DAApBoi</h2>
-          </Link>
+          <img
+            className="object-cover cursor-pointer h-30 w-36 sm:h-14"
+            src="/images/Logo.png"
+            alt="Logo"
+          />
         </div>
-        <ul id="nav-links" className="inline-flex">
+        <ul id="nav-links" className="flex items-center space-x-4">
+          <li
+            className={joinClasses(
+              "cursor-pointer",
+              "text-base",
+              "tracking-wide "
+            )}
+          >
+            <Link
+              to="/"
+              className={joinClasses(
+                " py-3",
+                "px-4",
+                "rounded-md",
+                "font-semibold",
+                "shadow-md",
+                "bg-blue-600",
+                "text-white",
+                "hover:shadow-lg "
+              )}
+            >
+              Certify
+            </Link>
+          </li>
+          <li className={joinClasses("cursor-pointer", "text-base")}>
+            <Link
+              className={joinClasses(
+                " py-3",
+                "px-4",
+                "rounded-md",
+                "font-semibold",
+                "shadow-md",
+                "bg-blue-600",
+                "text-white",
+                "hover:shadow-lg "
+              )}
+              to="/"
+            >
+              Create Course
+            </Link>
+          </li>
           {pending && (
             <li>
               <Button
