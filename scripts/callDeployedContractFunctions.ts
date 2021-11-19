@@ -5,6 +5,7 @@ import keccak256 from "keccak256";
 import { Bootcamp, Course, Review } from "../typechain/index";
 import { CIDS } from "../helpers/constants";
 import deployedAddresses from "../frontend/src/helpers/deployedAddress.json";
+import { saveDeployedAddress } from "../frontend/src/helpers/saveAddress";
 
 let students: string[];
 let merkleTree: MerkleTree;
@@ -64,6 +65,8 @@ async function createACourse() {
   //   "Course",
   //   courseAddress
   // )) as unknown as Course;
+  // TODO: save deployed address to json file so that we can use in event listener and helper scripts
+  // saveDeployedAddress({ contractName: "Course", contract: courseContract });
 }
 
 async function main() {

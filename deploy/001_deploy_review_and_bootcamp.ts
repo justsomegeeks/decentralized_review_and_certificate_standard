@@ -21,7 +21,6 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
 
   saveDeployedAddress({ contractName: "Bootcamp", contract: bootcamp });
   saveDeployedAddress({ contractName: "Review", contract: review });
-  saveDeployedAddress({ contractName: "Course", contract: course });
 
   console.log("Bootcamp deployed to: ", bootcamp.address);
   console.log("Course Implemention deployed to: ", course.address);
