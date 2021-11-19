@@ -85,7 +85,7 @@ describe("Review", async () => {
       signer1
     )) as unknown as Course__factory;
 
-    bootcampCourse = await BootcampCourse.attach(courseAddress);
+    bootcampCourse = BootcampCourse.attach(courseAddress) as Course;
 
     await expect(bootcampCourse.graduate(root, CID))
       .to.emit(bootcampCourse, "Graduate")
