@@ -1,11 +1,13 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Footer from "./components/layout/Footer";
 import Navbar from "./components/layout/Navbar";
 import { joinClasses } from "./helpers";
 import { useWallet } from "./context/WalletContext";
 import { getProvider } from "./provider";
 import Homepage from "./pages/HomePage";
+import NewCoursePage from "./pages/NewCoursePage";
+import NewBootcampPage from "./pages/NewBootcampPage";
 
 function App() {
   const { setWalletAddress } = useWallet();
@@ -30,9 +32,12 @@ function App() {
         <Navbar />
 
         <div className="h-full ">
-          <Switch>
-            <Route exact path="/" component={Homepage}></Route>
-          </Switch>
+          <Routes>
+            <Route path="/" element={<Homepage />}></Route>
+            <Route path="/newCourse" element={<NewCoursePage />} />
+            <Route path="/newBootcamp" element={<NewBootcampPage />} />
+            <Route path="/newBootcamp/:id" element={<NewBootcampPage />} />
+          </Routes>
         </div>
         <Footer />
       </div>

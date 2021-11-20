@@ -8,11 +8,15 @@ import Button from "../Button";
 import CircularLoader from "../CircularLoader";
 import GlobalMessage from "../GlobalMessage";
 import { Link } from "react-router-dom";
+import BootcampModal from "../modal/BootcampModal";
+import GraduateStudentModal from "../modal/GraduateStudentsModal";
 
 export default function Navbar(): ReactElement {
   const { pending } = useTransaction();
   const { walletAddress, setWalletAddress } = useWallet();
   const { setGlobalMessage } = useMessage();
+  const [showCertify, setShowCertify] = useState(false);
+  const [showBootcampModal, setShowBootcampModal] = useState(false);
 
   const handleConnect = async () => {
     const ethereum = (window as any).ethereum;
@@ -67,6 +71,7 @@ export default function Navbar(): ReactElement {
             )}
           >
             <Link
+              onClick={() => setShowCertify(true)}
               to="/"
               className={joinClasses(
                 " py-3",
@@ -84,6 +89,8 @@ export default function Navbar(): ReactElement {
           </li>
           <li className={joinClasses("cursor-pointer", "text-base")}>
             <Link
+              onClick={() => setShowBootcampModal(true)}
+              to="/"
               className={joinClasses(
                 " py-3",
                 "px-4",
@@ -94,7 +101,6 @@ export default function Navbar(): ReactElement {
                 "text-white",
                 "hover:shadow-lg "
               )}
-              to="/"
             >
               Create Course
             </Link>
@@ -124,6 +130,11 @@ export default function Navbar(): ReactElement {
         </ul>
       </div>
       <GlobalMessage />
+      <BootcampModal
+        showBootcampModal={showBootcampModal}
+        setShowBootcampModal={setShowBootcampModal}
+      />
+      <GraduateStudentModal show={showCertify} setShow={setShowCertify} />
     </div>
   );
 }
