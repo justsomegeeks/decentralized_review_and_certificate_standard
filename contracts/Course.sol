@@ -16,7 +16,7 @@ contract Course is Initializable, OwnableUpgradeable {
     // STATE
     string private courseCID;
     //      merkle proof => cid
-    mapping(bytes32 => string) graduations;
+    mapping(bytes32 => string) public graduations;
 
     function initialize(string memory _courseCID, address _owner)
         external

@@ -1,5 +1,6 @@
+import "@nomiclabs/hardhat-ethers";
 import mongoose from "mongoose";
-import ethers from "ethers";
+import { ethers } from "hardhat";
 import { config } from "dotenv";
 
 // ARTIFACTS
@@ -17,13 +18,14 @@ import {
   handleNewReview,
   updateBlock,
 } from "./helpers";
+import { Bootcamp, Course } from "../typechain";
 
 // MODELS
-import Bootcamp from "./models/Bootcamp";
-import Course from "./models/Course";
-import Review from "./models/Review";
-import Graduate from "./models/Graduate";
-import Block from "./models/Block";
+// import Bootcamp from "./models/Bootcamp";
+// import Course from "./models/Course";
+// import Review from "./models/Review";
+// import Graduate from "./models/Graduate";
+// import Block from "./models/Block";
 
 config();
 
@@ -33,8 +35,7 @@ const CONSTANTS = {
     rpc: process.env.RINKEBY_URL,
   },
 };
-
-const provider = new ethers.providers.JsonRpcProvider(CONSTANTS.rinkeby.rpc);
+const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545/");
 
 const reviewContract = new ethers.Contract(
   deployedAddresses.Review,
@@ -61,6 +62,34 @@ const courseContract = new ethers.Contract(
 
   console.log("DB connected successfully from Event Listener");
   // const currentBlockNumber = await provider.getBlockNumber();
+
+  bootcampContract.on("CourseCreated", (courseAddress, courseCID, bootcampAddress) => {
+    handleNewCourse(courseAddress, courseCID, bootcampAddress);
+    console.log(`CourseCreated: ${courseAddress} ${courseCID} ${bootcampAddress}`);
+  });
+  //
+  courseContract.on("Graduate", (merkelProof, courseCID) => {
+    handleGraduate(merkelProof, courseCID, courseContract.owner(), courseContract.address);
+    console.log(`NewGraduate: ${merkelProof} ${courseCID}`);
+  });
+
+  reviewContract.on("NewBootcamp", async (bootcampAddress) => {
+    const newBootcamp = await ethers.getContractAt('Bootcamp', bootcampAddress) as unknown as Bootcamp
+    const newBootCampCID = await newBootcamp.cid();
+
+    handleNewBootcamp(bootcampAddress, newBootCampCID);
+    console.log(`NewBootcamp:  ${bootcampAddress}`);
+  });
+
+  reviewContract.on(
+    "NewReview",
+    async (course, reviewer, reviewURI, rating) => {
+      const reviewCourseContract = await ethers.getContractAt('Course', course) as unknown as Course;
+      const bootcampAddress = await reviewCourseContract.owner();
+      handleNewReview(course, reviewer, reviewURI, rating, bootcampAddress);
+      console.log(`New Review: ${course} ${reviewer} ${reviewURI} ${rating}`);
+    }
+  );
 
   // let recordedBlock = await Block.findOne({
   //   name: "LastRecorded",
@@ -111,15 +140,11 @@ const courseContract = new ethers.Contract(
   //   const reviews = await getReviews;
   // }
 
-  reviewContract.on("NewReview", handleNewReview);
-
-  reviewContract.on("NewBootcamp", handleNewBootcamp);
+  // BEYOND THE SCOPE OF THIS HACKATHON
+  // TODO: Add functionality to record multiple courses in a bootcamp
+  //bootcampContract.on("CourseCreated", handleNewCourse);
 
   // BEYOND THE SCOPE OF THIS HACKATHON
-  //   TODO: Add functionality to record multiple courses in a bootcamp
-  bootcampContract.on("NewCourse", handleNewCourse);
-
-  // BEYOND THE SCOPE OF THIS HACKATHON
-  //   TODO: how to record when graduations is done in multiple courses?
-  courseContract.on("Graduate", handleGraduate);
+  // TODO: how to record when graduations is done in multiple courses?
+  //courseContract.on("Graduate", handleGraduate);
 })();

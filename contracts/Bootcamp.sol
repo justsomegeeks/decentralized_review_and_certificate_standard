@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Course.sol";
 
 contract Bootcamp is Ownable {
-    event CourseCreated(address courseAddress, string courseCID);
+    event CourseCreated(address courseAddress, string courseCID, address bootcamp);
     address immutable courseImplementationAddress;
     // TODO: Should this be string or bytes32 for saving gas?
     string public cid;
@@ -26,7 +26,8 @@ contract Bootcamp is Ownable {
         address cloneAddress = Clones.clone(courseImplementationAddress);
         Course(cloneAddress).initialize(_courseCID, owner());
         courses.push(cloneAddress);
-        emit CourseCreated(cloneAddress, _courseCID);
+        emit CourseCreated(cloneAddress, _courseCID, address(this));
+        console.log(cloneAddress);
         return cloneAddress;
     }
 
