@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.links {
+  @apply block w-auto cursor-pointer hover:text-blue-700 focus:text-blue-700 focus:underline hover:underline;
+}
+.heading {
+  @apply pb-8 text-4xl font-bold tracking-wider text-center text-gray-700;
+}
+.inputField {
+  @apply px-5 py-3 border-2 border-gray-300 shadow-sm;
+}
+.select {
+  @apply p-2 text-gray-600 border-2 outline-none;
+}
+.button {
+  @apply px-5 py-2 mt-3 text-white bg-blue-600 rounded-md shadow-md;
+}
+.modal-heading {
+  @apply w-full p-3 text-xl font-semibold text-center text-white bg-indigo-600 shadow-md my-7;
+}
+.course-card-data {
+  @apply ml-2 font-light text-gray-800;
+}

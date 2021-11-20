@@ -9,6 +9,7 @@ import Homepage from "./pages/HomePage";
 import NewCoursePage from "./pages/NewCoursePage";
 import NewBootcampPage from "./pages/NewBootcampPage";
 import BootcampDetailsPage from "./pages/BootcampDetailsPage";
+import ReviewPage from "./pages/ReviewPage";
 
 function App() {
   const { setWalletAddress } = useWallet();
@@ -35,6 +36,7 @@ function App() {
         <div className="h-full">
           <Routes>
             <Route path="/" element={<Homepage />}></Route>
+            <Route path={"bootcamp/:id/review"} element={<ReviewPage />} />
             <Route path="/bootcamp/:id" element={<BootcampDetailsPage />} />
             <Route path="/newCourse" element={<NewCoursePage />} />
             <Route path="/newBootcamp" element={<NewBootcampPage />} />

@@ -31,6 +31,7 @@ specifiers:
   keccak256: ^1.0.3
   merkletreejs: ^0.2.24
   prettier: ^2.4.1
+  react-simple-star-rating: ^3.0.0
   solhint: ^3.3.6
   ts-generator: ^0.1.1
   ts-morph: ^9.0.0
@@ -44,6 +45,7 @@ dependencies:
   babel-eslint: 10.1.0_eslint@7.11.0
   dotenv: 10.0.0
   fs-extra: 10.0.0
+  react-simple-star-rating: 3.0.0
 
 devDependencies:
   '@ethersproject/contracts': 5.5.0
@@ -7252,6 +7254,14 @@ packages:
       iconv-lite: 0.4.24
       unpipe: 1.0.0
     dev: true
+
+  /react-simple-star-rating/3.0.0:
+    resolution: {integrity: sha512-kxl9ucQTr1TzXGT/klBe7EMqCN9uuRoSlZqKCr9HMMriEY8rB/VwABtwELYhSClhkE0LIRpWw12EAG9hq5DOSg==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dev: false
 
   /read-pkg-up/1.0.1:
     resolution: {integrity: sha1-nWPBMnbAZZGNV/ACpX9AobZD+wI=}

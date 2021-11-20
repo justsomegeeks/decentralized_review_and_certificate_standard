@@ -7,7 +7,7 @@ import { getSignerAddress } from "../../provider";
 import Button from "../Button";
 import CircularLoader from "../CircularLoader";
 import GlobalMessage from "../GlobalMessage";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BootcampModal from "../modal/BootcampModal";
 import GraduateStudentModal from "../modal/GraduateStudentsModal";
 
@@ -17,6 +17,8 @@ export default function Navbar(): ReactElement {
   const { setGlobalMessage } = useMessage();
   const [showCertify, setShowCertify] = useState(false);
   const [showBootcampModal, setShowBootcampModal] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleConnect = async () => {
     const ethereum = (window as any).ethereum;
@@ -55,7 +57,7 @@ export default function Navbar(): ReactElement {
           "items-center"
         )}
       >
-        <div id="brand" className="inline-flex">
+        <div id="brand" className="inline-flex" onClick={() => navigate("/")}>
           <img
             className="object-cover cursor-pointer h-30 w-36 sm:h-14"
             src="/images/Logo.png"
