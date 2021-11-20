@@ -6,13 +6,16 @@ import reportWebVitals from "./reportWebVitals";
 import { MessageProvider } from "./context/MessageContext";
 import { WalletProvider } from "./context/WalletContext";
 import { TransactionProvider } from "./context/TransactionContext";
+import { BootcampProvider } from "./context/BootcampContext";
 
 ReactDOM.render(
   <React.StrictMode>
     <MessageProvider>
       <WalletProvider>
         <TransactionProvider>
-          <App />
+          <BootcampProvider>
+            <App />
+          </BootcampProvider>
         </TransactionProvider>
       </WalletProvider>
     </MessageProvider>

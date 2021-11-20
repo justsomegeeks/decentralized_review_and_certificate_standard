@@ -1,11 +1,13 @@
 import { useNavigate } from ".pnpm/react-router@6.0.2_react@17.0.2/node_modules/react-router";
 import React, { useState } from "react";
+import { useBootcamp } from "../context/BootcampContext";
 import { useMessage } from "../context/MessageContext";
 import { joinClasses } from "../helpers";
 
 const NewCoursePage = () => {
   const navigate = useNavigate();
   const { setGlobalMessage } = useMessage();
+  const { createCourse } = useBootcamp();
   const [userInputData, setUserInputData] = useState({
     nameOfCourse: "",
     bootcampAddress: "",
@@ -23,11 +25,16 @@ const NewCoursePage = () => {
       [name]: value,
     });
   };
-  const handleCreateCourse = () => {
-    // TODO: Add course data to IPFS
-    // call bootcampContract.createCourse with required parameters
-    // set global pending to true
-    // wait for transaction to complete
+  const handleCreateCourse = async () => {
+    const courseArgs = {
+      cost: userInputData.cost,
+      name: userInputData.nameOfCourse,
+      description: userInputData.descriptionOfCourse,
+      duration: userInputData.duration,
+    };
+    if (createCourse) {
+      await createCourse(courseArgs);
+    }
 
     setUserInputData({
       nameOfCourse: "",
@@ -81,7 +88,7 @@ const NewCoursePage = () => {
           />
         </div>
         <div className="flex flex-col mb-5 space-y-3">
-          <label htmlFor="name">Cost</label>
+          <label htmlFor="name">Cost in dollars</label>
           <input
             type="text"
             onChange={handleInputChange}

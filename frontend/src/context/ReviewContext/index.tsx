@@ -26,12 +26,12 @@ interface ReviewState {
 }
 const initialState: ReviewState = {};
 
-const BootcampContext = React.createContext<ReviewState>(initialState);
+const ReviewContext = React.createContext<ReviewState>(initialState);
 
 type ProviderProps = {
   children: ReactNode;
 };
-export const BootcampProvider = ({ children }: ProviderProps) => {
+export const ReviewProvider = ({ children }: ProviderProps) => {
   const { walletAddress } = useWallet();
   const [contract, setContract] = React.useState<Review>();
 
@@ -71,10 +71,10 @@ export const BootcampProvider = ({ children }: ProviderProps) => {
   }
 
   return (
-    <BootcampContext.Provider value={{ reviewCourse, addBootcamp }}>
+    <ReviewContext.Provider value={{ reviewCourse, addBootcamp }}>
       {children}
-    </BootcampContext.Provider>
+    </ReviewContext.Provider>
   );
 };
 
-export const useBootcamp = () => React.useContext(BootcampContext);
+export const useReview = () => React.useContext(ReviewContext);

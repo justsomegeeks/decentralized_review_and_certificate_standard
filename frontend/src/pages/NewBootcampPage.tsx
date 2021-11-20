@@ -5,15 +5,13 @@ import CircularLoader from "../components/CircularLoader";
 import { useMessage } from "../context/MessageContext";
 import { joinClasses } from "../helpers";
 import Button from "../components/Button";
+import { useBootcamp } from "../context/BootcampContext";
 
 const NewBootcampPage = () => {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [buttonText] = useState("Create");
   const [showOtherFormFields, setShowOtherFormField] = useState(false);
-  const [showKey, setShowKey] = useState(false);
-  const [key] = useState("0x000bmm3jh34l2j344k4k545vbeve");
   const { setGlobalMessage } = useMessage();
+  const { txPending, createBootcamp, bootcampAddress } = useBootcamp();
 
   const [userInputData, setUserInputData] = useState({
     nameOfBootcamp: "",
@@ -33,31 +31,37 @@ const NewBootcampPage = () => {
     });
   };
 
-  const handleCreateBootcamp = () => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      setUserInputData(userInputData);
-      setShowKey(true);
-      navigate("/newBootcamp/id");
-      setShowOtherFormField(true);
-    }, 2000);
+  const handleCreateBootcamp = async () => {
+    if (createBootcamp) {
+      await createBootcamp(
+        userInputData.nameOfBootcamp,
+        userInputData.location
+      );
+      setGlobalMessage({
+        message: `Bootcamp ${bootcampAddress} has been created successfullly`,
+        type: "success",
+      });
 
-    // alert(JSON.stringify(userInputData));
-    setUserInputData({
-      nameOfBootcamp: "",
-      location: "",
-      cost: "",
-      duration: "",
-      nameOfCourse: "",
-      descriptionOfCourse: "",
-    });
-    // your logic
+      navigate("/newBootcamp/id");
+
+      setShowOtherFormField(true);
+
+      // alert(JSON.stringify(userInputData));
+      setUserInputData({
+        nameOfBootcamp: "",
+        location: "",
+        cost: "",
+        duration: "",
+        nameOfCourse: "",
+        descriptionOfCourse: "",
+      });
+      // your logic
+    }
   };
   const handleCreateCourse = () => {
     navigate("/");
     setGlobalMessage({
-      message: `course with address ${key} created successfullly`,
+      message: `course with address ${bootcampAddress} created successfullly`,
       type: "success",
     });
     setTimeout(() => {
@@ -110,7 +114,7 @@ const NewBootcampPage = () => {
                 color="primary"
                 onClick={handleCreateBootcamp}
               >
-                {loading ? <CircularLoader /> : buttonText}
+                {txPending ? <CircularLoader /> : "Create"}
               </Button>
             </div>
           </>
@@ -129,7 +133,7 @@ const NewBootcampPage = () => {
               />
             </div>
             <div className="flex flex-col mb-5 space-y-3">
-              <label htmlFor="name">Cost</label>
+              <label htmlFor="name">Cost in dollars</label>
               <input
                 type="text"
                 onChange={handleInputChange}
@@ -163,33 +167,31 @@ const NewBootcampPage = () => {
                 placeholder="Course description"
               ></textarea>
             </div>
-            {showKey ? (
-              <>
-                <p className="text-xs font-thin ">
-                  <span className="font-normal text-red-700">
-                    {" "}
-                    Important Note:
-                  </span>{" "}
-                  This is the unique remote address of your bootcamp. click to
-                  copy and paste somewhere, if you lose it then you will not be
-                  able to access your bootcamp
-                </p>
-                <p
-                  className={joinClasses(
-                    "text-sm",
-                    "p-1",
-                    "w-min",
-                    "cursor-pointer",
-                    "hover:text-gray-700"
-                  )}
-                  onClick={() => {
-                    navigator.clipboard.writeText(key);
-                  }}
-                >
-                  {key}
-                </p>
-              </>
-            ) : null}
+            <div>
+              <p className="text-xs font-thin ">
+                <span className="font-normal text-red-700">
+                  {" "}
+                  Important Note:
+                </span>{" "}
+                This is the unique remote address of your bootcamp. click to
+                copy and paste somewhere, if you lose it then you will not be
+                able to access your bootcamp
+              </p>
+              <p
+                className={joinClasses(
+                  "text-sm",
+                  "p-1",
+                  "w-min",
+                  "cursor-pointer",
+                  "hover:text-gray-700"
+                )}
+                onClick={() => {
+                  navigator.clipboard.writeText(bootcampAddress);
+                }}
+              >
+                {bootcampAddress}
+              </p>
+            </div>
             <div className="flex justify-center">
               <Button color="primary" onClick={handleCreateCourse}>
                 Add
