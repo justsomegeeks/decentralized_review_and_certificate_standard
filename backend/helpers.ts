@@ -25,14 +25,13 @@ type BootcampProps = {
 };
 
 export const handleNewBootcamp = async (
-  newBootcampAddress :string,
+  newBootcampAddress: string,
   newBootcampCID: string
 ) => {
   const bootcampData = await IPFS.get(newBootcampCID);
-  const bootcamp = Bootcamp.create( {
+  const bootcamp = Bootcamp.create({
     cid: newBootcampAddress,
-
-  })
+  });
 };
 
 type ReviewProps = {

@@ -1,6 +1,5 @@
-import "@nomiclabs/hardhat-ethers";
+import { ethers } from "ethers";
 import mongoose from "mongoose";
-import { ethers } from "hardhat";
 import { config } from "dotenv";
 
 // ARTIFACTS
@@ -63,18 +62,32 @@ const courseContract = new ethers.Contract(
   console.log("DB connected successfully from Event Listener");
   // const currentBlockNumber = await provider.getBlockNumber();
 
-  bootcampContract.on("CourseCreated", (courseAddress, courseCID, bootcampAddress) => {
-    handleNewCourse(courseAddress, courseCID, bootcampAddress);
-    console.log(`CourseCreated: ${courseAddress} ${courseCID} ${bootcampAddress}`);
-  });
+  bootcampContract.on(
+    "CourseCreated",
+    (courseAddress, courseCID, bootcampAddress) => {
+      handleNewCourse(courseAddress, courseCID, bootcampAddress);
+      console.log(
+        `CourseCreated: ${courseAddress} ${courseCID} ${bootcampAddress}`
+      );
+    }
+  );
   //
   courseContract.on("Graduate", (merkelProof, courseCID) => {
-    handleGraduate(merkelProof, courseCID, courseContract.owner(), courseContract.address);
+    handleGraduate(
+      merkelProof,
+      courseCID,
+      courseContract.owner(),
+      courseContract.address
+    );
     console.log(`NewGraduate: ${merkelProof} ${courseCID}`);
   });
 
   reviewContract.on("NewBootcamp", async (bootcampAddress) => {
-    const newBootcamp = await ethers.getContractAt('Bootcamp', bootcampAddress) as unknown as Bootcamp
+    const newBootcamp = new ethers.Contract(
+      bootcampAddress,
+      bootcampArtifact.abi,
+      provider
+    ) as unknown as Bootcamp;
     const newBootCampCID = await newBootcamp.cid();
 
     handleNewBootcamp(bootcampAddress, newBootCampCID);
@@ -83,11 +96,23 @@ const courseContract = new ethers.Contract(
 
   reviewContract.on(
     "NewReview",
-    async (course, reviewer, reviewURI, rating) => {
-      const reviewCourseContract = await ethers.getContractAt('Course', course) as unknown as Course;
+    async (courseAddress, reviewer, reviewURI, rating) => {
+      const reviewCourseContract = new ethers.Contract(
+        courseAddress,
+        courseArtifact.abi,
+        provider
+      ) as unknown as Course;
       const bootcampAddress = await reviewCourseContract.owner();
-      handleNewReview(course, reviewer, reviewURI, rating, bootcampAddress);
-      console.log(`New Review: ${course} ${reviewer} ${reviewURI} ${rating}`);
+      handleNewReview(
+        courseAddress,
+        reviewer,
+        reviewURI,
+        rating,
+        bootcampAddress
+      );
+      console.log(
+        `New Review: ${courseAddress} ${reviewer} ${reviewURI} ${rating}`
+      );
     }
   );
 
