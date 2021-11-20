@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 type Bootcamp = {
   cid: string;
   address: string;
+  name: string;
   description: string;
   location: string;
   courses: mongoose.Schema.Types.ObjectId;

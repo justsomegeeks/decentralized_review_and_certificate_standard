@@ -24,13 +24,14 @@ type BootcampProps = {
   location: string;
 };
 
-export const handleNewBootcamp = async ({
-  bootcampAddress,
-  name,
-  location,
-}: BootcampProps) => {
-  // TODO: record when new course is added to review protocol
-  // TODO: Fetch ipfs with cid and write it to the database for consumption
+export const handleNewBootcamp = async (
+  newBootcampAddress: string,
+  newBootcampCID: string
+) => {
+  const bootcampData = await IPFS.get(newBootcampCID);
+  const bootcamp = Bootcamp.create({
+    cid: newBootcampAddress,
+  });
 };
 
 type ReviewProps = {
@@ -40,18 +41,19 @@ type ReviewProps = {
   reviewCID: string;
   rating: number;
 };
-export const handleNewReview = async ({
-  bootcampAddress,
-  reviewer,
-  reviewCID,
-  rating,
-}: ReviewProps) => {
+export const handleNewReview = async (
+  course: string,
+  reiewer: string,
+  reviewURI: string,
+  rating: number,
+  bootcampAddress: string
+) => {
   // TODO: Fetch Details from CID
 
   try {
     const review = await Review.create({
-      cid: reviewCID,
-      reviewer,
+      cid: reviewURI,
+      reviewer: reiewer,
       overallRating: rating,
     });
     await Bootcamp.findOneAndUpdate(
@@ -71,12 +73,12 @@ type GraduateProps = {
   graduationCID: string;
 };
 
-export const handleGraduate = async ({
-  proof,
-  graduationCID,
-  bootcampAddress,
-  courseAddress,
-}: GraduateProps) => {
+export const handleGraduate = async (
+  proof: string,
+  courseCID: string,
+  bootcampAddress: string,
+  courseAddress: string
+) => {
   // TODO: Add Graduation details to database
   const bootcamp = await Bootcamp.findOne({ address: bootcampAddress });
   const course = await Course.findOne({ address: courseAddress });
@@ -84,7 +86,7 @@ export const handleGraduate = async ({
     try {
       // Save graduation details
       const graduation = await Graduate.create({
-        cid: graduationCID,
+        cid: courseCID,
         address: courseAddress,
         proof,
         bootcamp: bootcampAddress,
@@ -116,11 +118,11 @@ type CourseProps = {
   bootcampAddress: string;
 };
 
-export const handleNewCourse = async ({
-  courseAddress,
-  courseCID,
-  bootcampAddress,
-}: CourseProps) => {
+export const handleNewCourse = async (
+  courseAddress: string,
+  courseCID: string,
+  bootcampAddress: string
+) => {
   const bootcamp = await Bootcamp.findOne({ address: bootcampAddress });
   if (bootcamp) {
     try {

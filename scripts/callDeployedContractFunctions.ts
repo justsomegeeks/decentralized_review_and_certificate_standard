@@ -2,12 +2,13 @@ import "@nomiclabs/hardhat-ethers";
 import { ethers } from "hardhat";
 import { MerkleTree } from "merkletreejs";
 import keccak256 from "keccak256";
-import { Bootcamp, Course, Review } from "../typechain/index";
+import { Bootcamp, Course, Review } from "../typechain";
 import { CIDS } from "../helpers/constants";
 import deployedAddresses from "../frontend/src/helpers/deployedAddress.json";
-import { saveDeployedAddress } from "../frontend/src/helpers/saveAddress";
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
 
 let students: string[];
+let signer1: SignerWithAddress;
 let merkleTree: MerkleTree;
 let root: string;
 let leaf: string;
@@ -26,54 +27,48 @@ async function init() {
     "Review",
     deployedAddresses.Review
   )) as unknown as Review;
+  courseContract = (await ethers.getContractAt(
+    "Course",
+    deployedAddresses.Course
+  )) as unknown as Course;
+
   students = await ethers.provider.listAccounts();
-  console.log(students);
+  //console.log(students);
+
+  [signer1] = await ethers.getSigners();
 
   merkleTree = new MerkleTree(students, keccak256, {
     hashLeaves: true,
     sortPairs: true,
   });
   root = merkleTree.getHexRoot();
-  leaf = keccak256(students[1]);
+  leaf = keccak256(students[0]);
   proof = merkleTree.getHexProof(leaf);
 }
 
-async function writeAReview() {
-  //TODO: write a review
-  await reviewContract.reviewCourse(
-    courseContract.address,
-    CIDS.review,
-    RATING,
-    proof,
-    root
-  );
-}
+// async function createACourse() {
+//   await bootcampContract.createCourse(CIDS.course);
+// }
+
 async function graduateStudents() {
-  // TODO: call graduate from Course Contract
-}
-async function addABootcamp() {
-  // TODO: call addBootcamp from Review Contract
+  await courseContract.graduate(root, CIDS.graduation);
 }
 
-async function createACourse() {
-  // TODO: call createCourse from Bootcamp Contract
-  const createCourse = await bootcampContract.createCourse(CIDS.course);
-  const reciept = await createCourse.wait();
-  // TODO: look into events emmitted from above reciept and get courseContractAddress
-  // TODO: get the address of the newly created course and initialize it to courseContract
-  // courseContract = (await ethers.getContractAt(
-  //   "Course",
-  //   courseAddress
-  // )) as unknown as Course;
-  // TODO: save deployed address to json file so that we can use in event listener and helper scripts
-  // saveDeployedAddress({ contractName: "Course", contract: courseContract });
+async function addABootcamp() {
+  await reviewContract.addBootcamp(deployedAddresses.Bootcamp);
+}
+
+async function writeAReview() {
+  await reviewContract
+    .connect(signer1)
+    .reviewCourse(courseContract.address, CIDS.review, RATING, proof, root);
 }
 
 async function main() {
   await init();
-  await addABootcamp();
-  await createACourse();
   await graduateStudents();
+  await addABootcamp();
+  //await createACourse();
   await writeAReview();
 }
 main().catch((error) => {
