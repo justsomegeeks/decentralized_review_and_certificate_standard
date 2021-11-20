@@ -141,7 +141,7 @@ const BootcampDetailsPage = () => {
               "scrollbar-hide"
             )}
           >
-            <h1 className="heading">Couses Offers</h1>
+            <h1 className="heading">Courses</h1>
             {demoCourses.map(({ name, price, duration }) => (
               <CourseCard
                 key={uniqId()}
