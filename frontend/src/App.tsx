@@ -5,8 +5,7 @@ import Navbar from "./components/layout/Navbar";
 import { joinClasses } from "./helpers";
 import { useWallet } from "./context/WalletContext";
 import { getProvider } from "./provider";
-import Greeter from "./components/Greeter";
-import { GreeterProvider } from "./context/GreeterContext";
+import Homepage from "./pages/HomePage";
 
 function App() {
   const { setWalletAddress } = useWallet();
@@ -27,23 +26,12 @@ function App() {
   }, [setWalletAddress]);
   return (
     <Router>
-      <div
-        className={joinClasses(
-          "grid",
-          "grid-rows-3m",
-          "min-h-screen",
-          "max-w-4xl",
-          "mx-auto",
-          "text-center",
-          "text-gray-600",
-          "font-mono"
-        )}
-      >
+      <div className={joinClasses("grid", "grid-rows-3m", "min-h-screen")}>
         <Navbar />
 
-        <div className="h-full text-center">
+        <div className="h-full ">
           <Switch>
-            <Route exact path="/"></Route>
+            <Route exact path="/" component={Homepage}></Route>
           </Switch>
         </div>
         <Footer />
