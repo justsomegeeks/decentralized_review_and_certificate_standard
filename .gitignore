@@ -2,7 +2,7 @@ node_modules
 
 #hardhat files
 cache
-artifacts
+artifacts/
 frontend/src/hardhat
 
 .env
@@ -10,3 +10,4 @@ frontend/src/hardhat
 .idea
 
 typechain/
+scripts/helper.js

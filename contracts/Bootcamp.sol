@@ -10,17 +10,11 @@ contract Bootcamp is Ownable {
     event CourseCreated(address courseAddress, string courseCID);
     address immutable courseImplementationAddress;
     // TODO: Should this be string or bytes32 for saving gas?
-    string public name;
-    string public location;
+    string public cid;
     address[] public courses;
 
-    constructor(
-        address _courseImplementationAddress,
-        string memory _name,
-        string memory _location
-    ) {
-        name = _name;
-        location = _location;
+    constructor(address _courseImplementationAddress, string memory _cid) {
+        cid = _cid;
         courseImplementationAddress = _courseImplementationAddress;
     }
 

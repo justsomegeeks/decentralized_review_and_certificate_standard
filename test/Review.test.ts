@@ -50,7 +50,10 @@ describe("Review", async () => {
       "Bootcamp",
       signer1
     )) as unknown as Bootcamp__factory;
-    bootcamp = await Bootcamp.deploy(course.address, "Bootcamp", "US");
+    bootcamp = await Bootcamp.deploy(
+      course.address,
+      "QmRSrcFg6vn3rrU1yuQ8pGJQ1eJy2wRtPuPLncrsPhd1P8"
+    );
     await bootcamp.deployed();
 
     students = await ethers.provider.listAccounts();
@@ -82,7 +85,7 @@ describe("Review", async () => {
       signer1
     )) as unknown as Course__factory;
 
-    bootcampCourse = await BootcampCourse.attach(courseAddress);
+    bootcampCourse = BootcampCourse.attach(courseAddress) as Course;
 
     await expect(bootcampCourse.graduate(root, CID))
       .to.emit(bootcampCourse, "Graduate")
