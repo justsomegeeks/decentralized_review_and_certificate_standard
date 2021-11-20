@@ -49,6 +49,9 @@ export default function GlobalMessage(): ReactElement {
           }`,
           "mt-2",
           "py-4",
+          "max-w-5xl",
+          "mx-auto",
+          "text-center",
           "relative",
           "rounded"
         )}

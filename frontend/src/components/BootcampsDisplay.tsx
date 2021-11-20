@@ -3,7 +3,7 @@ import BootcampCard from "./cards/BootcampCard";
 import uniqId from "uniqid";
 import { demoBootcamps } from "../demoData";
 import { joinClasses } from "../helpers";
-const DisplayBootcampCards = () => {
+const BootcampsDisplay = () => {
   return (
     <div className="max-w-5xl m-10 mx-auto">
       <h1
@@ -43,4 +43,4 @@ const DisplayBootcampCards = () => {
   );
 };
 
-export default DisplayBootcampCards;
+export default BootcampsDisplay;

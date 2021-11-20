@@ -8,6 +8,7 @@ import { getProvider } from "./provider";
 import Homepage from "./pages/HomePage";
 import NewCoursePage from "./pages/NewCoursePage";
 import NewBootcampPage from "./pages/NewBootcampPage";
+import BootcampDetailsPage from "./pages/BootcampDetailsPage";
 
 function App() {
   const { setWalletAddress } = useWallet();
@@ -31,9 +32,10 @@ function App() {
       <div className={joinClasses("grid", "grid-rows-3m", "min-h-screen")}>
         <Navbar />
 
-        <div className="h-full ">
+        <div className="h-full">
           <Routes>
             <Route path="/" element={<Homepage />}></Route>
+            <Route path="/bootcamp/:id" element={<BootcampDetailsPage />} />
             <Route path="/newCourse" element={<NewCoursePage />} />
             <Route path="/newBootcamp" element={<NewBootcampPage />} />
             <Route path="/newBootcamp/:id" element={<NewBootcampPage />} />

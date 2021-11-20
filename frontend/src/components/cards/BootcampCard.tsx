@@ -1,4 +1,5 @@
 import { StarIcon } from "@heroicons/react/solid";
+import { useNavigate } from "react-router-dom";
 import uniqId from "uniqid";
 import { joinClasses } from "../../helpers";
 type BootcampCardPropsType = {
@@ -15,8 +16,10 @@ const BootcampCard = ({
   subjects,
   bootcampAddress,
 }: BootcampCardPropsType) => {
+  const navigate = useNavigate();
   return (
     <div
+      onClick={() => navigate(`/bootcamp/${bootcampAddress}`)}
       className={joinClasses(
         "bg-gray-100",
         "shadow-md",
