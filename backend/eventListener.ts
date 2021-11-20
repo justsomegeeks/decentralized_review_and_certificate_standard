@@ -53,13 +53,13 @@ const courseContract = new ethers.Contract(
 );
 
 (async () => {
-  await mongoose.connect(process.env.MONGO_URI as string, {}, () => {
+  mongoose.connect(`${process.env.MONGO_URI}`, {}, async function () {
     console.log("Database connected successfuly");
   });
+
   //TODO:  Remove this on prod.
   await emptyDatabase();
 
-  console.log("DB connected successfully from Event Listener");
   // const currentBlockNumber = await provider.getBlockNumber();
 
   bootcampContract.on(
@@ -67,19 +67,14 @@ const courseContract = new ethers.Contract(
     (courseAddress, courseCID, bootcampAddress) => {
       handleNewCourse(courseAddress, courseCID, bootcampAddress);
       console.log(
-        `CourseCreated: ${courseAddress} ${courseCID} ${bootcampAddress}`
+        `CourseCreated => course addresss: ${courseAddress}, course id: ${courseCID}, bootcamp id: ${bootcampAddress}`
       );
     }
   );
-  //
-  courseContract.on("Graduate", (merkelProof, courseCID) => {
-    handleGraduate(
-      merkelProof,
-      courseCID,
-      courseContract.owner(),
-      courseContract.address
-    );
-    console.log(`NewGraduate: ${merkelProof} ${courseCID}`);
+
+  courseContract.on("Graduate", async (merkelProof, courseCID) => {
+    handleGraduate(merkelProof, courseCID, courseContract.address);
+    console.log(`NewGraduate => proof: ${merkelProof}, course Id: ${courseCID}`);
   });
 
   reviewContract.on("NewBootcamp", async (bootcampAddress) => {
@@ -90,28 +85,16 @@ const courseContract = new ethers.Contract(
     ) as unknown as Bootcamp;
     const newBootCampCID = await newBootcamp.cid();
 
-    handleNewBootcamp(bootcampAddress, newBootCampCID);
-    console.log(`NewBootcamp:  ${bootcampAddress}`);
+    handleNewBootcamp(newBootcamp.address, newBootCampCID);
+    console.log(`NewBootcamp => bootcamp address:  ${bootcampAddress}`);
   });
 
   reviewContract.on(
     "NewReview",
     async (courseAddress, reviewer, reviewURI, rating) => {
-      const reviewCourseContract = new ethers.Contract(
-        courseAddress,
-        courseArtifact.abi,
-        provider
-      ) as unknown as Course;
-      const bootcampAddress = await reviewCourseContract.owner();
-      handleNewReview(
-        courseAddress,
-        reviewer,
-        reviewURI,
-        rating,
-        bootcampAddress
-      );
+      handleNewReview(courseAddress, reviewer, reviewURI, rating);
       console.log(
-        `New Review: ${courseAddress} ${reviewer} ${reviewURI} ${rating}`
+        `New Review => course address: ${courseAddress}, reviewer: ${reviewer}, rewviewUri: ${reviewURI}, rating: ${rating}`
       );
     }
   );

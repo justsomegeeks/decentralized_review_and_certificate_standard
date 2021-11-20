@@ -1,15 +1,5 @@
 import mongoose from "mongoose";
-
-type Bootcamp = {
-  cid: string;
-  address: string;
-  name: string;
-  description: string;
-  location: string;
-  courses: mongoose.Schema.Types.ObjectId;
-  reviews: mongoose.Schema.Types.ObjectId;
-  rating: number;
-};
+import { Bootcamp } from "./models";
 
 const Bootcamp = new mongoose.Schema<Bootcamp>(
   {
@@ -27,8 +17,6 @@ const Bootcamp = new mongoose.Schema<Bootcamp>(
     // },
 
     courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
-
-    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
   },
   {
     collection: "Bootcamps",

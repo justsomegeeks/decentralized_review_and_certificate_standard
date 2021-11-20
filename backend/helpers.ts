@@ -11,17 +11,15 @@ const IPFS = create({ url: "https://infura.io:5001" });
 
 export const emptyDatabase = async () => {
   try {
-    //   TODO: Clear DATABASE
-    console.log("Database has be emptied!");
+    await Block.deleteMany({});
+    await Bootcamp.deleteMany({});
+    await Review.deleteMany({});
+    await Course.deleteMany({});
+    await Graduate.deleteMany({});
+    console.log("Database has been emptied!", "\n");
   } catch {
-    console.log("Couldn't delete data!");
+    console.log("Couldn't delete data!", "\n");
   }
-};
-
-type BootcampProps = {
-  bootcampAddress: string;
-  name: string;
-  location: string;
 };
 
 export const handleNewBootcamp = async (
@@ -30,23 +28,16 @@ export const handleNewBootcamp = async (
 ) => {
   const bootcampData = await IPFS.get(newBootcampCID);
   const bootcamp = Bootcamp.create({
-    cid: newBootcampAddress,
+    cid: newBootcampCID,
+    address: newBootcampAddress,
   });
 };
 
-type ReviewProps = {
-  bootcampAddress: string;
-  courseAddress: string;
-  reviewer: string;
-  reviewCID: string;
-  rating: number;
-};
 export const handleNewReview = async (
-  course: string,
+  courseAddress: string,
   reiewer: string,
   reviewURI: string,
-  rating: number,
-  bootcampAddress: string
+  rating: number
 ) => {
   // TODO: Fetch Details from CID
 
@@ -56,8 +47,8 @@ export const handleNewReview = async (
       reviewer: reiewer,
       overallRating: rating,
     });
-    await Bootcamp.findOneAndUpdate(
-      { address: bootcampAddress },
+    await Course.findOneAndUpdate(
+      { address: courseAddress },
       { $push: { reviews: review } },
       { new: true, upsert: true }
     );
@@ -66,38 +57,28 @@ export const handleNewReview = async (
   }
 };
 
-type GraduateProps = {
-  bootcampAddress: string;
-  courseAddress: string;
-  proof: string;
-  graduationCID: string;
-};
-
 export const handleGraduate = async (
   proof: string,
   courseCID: string,
-  bootcampAddress: string,
   courseAddress: string
 ) => {
   // TODO: Add Graduation details to database
-  const bootcamp = await Bootcamp.findOne({ address: bootcampAddress });
   const course = await Course.findOne({ address: courseAddress });
-  if (bootcamp && course) {
+  if (course) {
     try {
       // Save graduation details
       const graduation = await Graduate.create({
         cid: courseCID,
         address: courseAddress,
-        proof,
-        bootcamp: bootcampAddress,
+        proof: proof,
+        bootcamp: course.bootcamp,
       });
-
+      await course.updateOne({ $push: { graduations: graduation } });
       // Update course graduations details
-      await Course.findOneAndUpdate(
-        { bootcamp, address: course },
-        { $push: { graduations: graduation } },
-        { upsert: true, new: true }
-      );
+      // await Course.findOneAndUpdate(
+      //   { address: course },
+      //   { $push: { graduations: graduation } },
+      // );
     } catch (err) {
       console.log(err);
     }
@@ -112,12 +93,6 @@ export const handleGraduate = async (
   }
 };
 
-type CourseProps = {
-  courseAddress: string;
-  courseCID: string;
-  bootcampAddress: string;
-};
-
 export const handleNewCourse = async (
   courseAddress: string,
   courseCID: string,
@@ -126,6 +101,7 @@ export const handleNewCourse = async (
   const bootcamp = await Bootcamp.findOne({ address: bootcampAddress });
   if (bootcamp) {
     try {
+      bootcampAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
       const course = await Course.create({
         address: courseAddress,
         cid: courseCID,

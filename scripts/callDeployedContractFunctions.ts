@@ -46,9 +46,9 @@ async function init() {
   proof = merkleTree.getHexProof(leaf);
 }
 
-// async function createACourse() {
-//   await bootcampContract.createCourse(CIDS.course);
-// }
+async function createACourse() {
+  await bootcampContract.createCourse(CIDS.course);
+}
 
 async function graduateStudents() {
   await courseContract.graduate(root, CIDS.graduation);
@@ -65,11 +65,12 @@ async function writeAReview() {
 }
 
 async function main() {
+  console.log("\n");
   await init();
-  await graduateStudents();
-  await addABootcamp();
-  //await createACourse();
-  await writeAReview();
+  // await addABootcamp();
+  //await graduateStudents();
+  await createACourse();
+  //await writeAReview();
 }
 main().catch((error) => {
   console.error(error);

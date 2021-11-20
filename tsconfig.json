@@ -17,5 +17,5 @@
     "jsx": "react-jsx"
   },
   "include": ["src", "./test"],
-  "files": ["./hardhat.config.ts"]
+  "files": ["./hardhat.config.ts"],
 }

@@ -27,7 +27,6 @@ contract Bootcamp is Ownable {
         Course(cloneAddress).initialize(_courseCID, owner());
         courses.push(cloneAddress);
         emit CourseCreated(cloneAddress, _courseCID, address(this));
-        console.log(cloneAddress);
         return cloneAddress;
     }
 

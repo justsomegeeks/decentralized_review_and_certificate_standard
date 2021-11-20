@@ -1,4 +1,4 @@
-import { useNavigate } from ".pnpm/react-router@6.0.2_react@17.0.2/node_modules/react-router";
+import { useNavigate } from "react-router";
 import React, { useState } from "react";
 import { useBootcamp } from "../context/BootcampContext";
 import { useMessage } from "../context/MessageContext";

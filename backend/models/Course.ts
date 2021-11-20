@@ -1,10 +1,6 @@
 import mongoose from "mongoose";
-type course = {
-  cid: string;
-  address: string;
-  bootcamp: mongoose.Schema.Types.ObjectId;
-  graduations: mongoose.Schema.Types.ObjectId[];
-};
+import { course } from "./models";
+
 const Course = new mongoose.Schema<course>({
   cid: {
     type: String,
@@ -23,6 +19,7 @@ const Course = new mongoose.Schema<course>({
       ref: "Graduate",
     },
   ],
+  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
 });
 
 export default mongoose.models.Course || mongoose.model("Course", Course);
