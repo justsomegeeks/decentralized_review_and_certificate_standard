@@ -7,9 +7,7 @@ const router = express.Router();
 // GET ALL BOOTCAMPS
 router.get("/bootcamps", async (_: Request, res: Response) => {
   const bootcamps = await Bootcamp.find({}).populate("courses").exec();
-  return res.json({
-    request: bootcamps,
-  });
+  return res.json(bootcamps);
 });
 
 // GET BOOTCAMP DETAILS
@@ -24,9 +22,7 @@ router.get(
       .populate("reviews")
       .exec();
 
-    return res.json({
-      request: bootcamp,
-    });
+    return res.json(bootcamp);
   }
 );
 
@@ -39,9 +35,7 @@ router.get(
     const reviews = await Review.find({
       bootcampAddress,
     });
-    return res.json({
-      request: reviews,
-    });
+    return res.json(reviews);
   }
 );
 // GET Average rating
@@ -70,10 +64,10 @@ router.get(
   async (req: Request, res: Response) => {
     const bootcamp = await Bootcamp.findOne({
       address: req.params.bootcampAddress,
-    });
-    return res.json({
-      request: bootcamp.courses,
-    });
+    })
+      .populate("courses")
+      .exec();
+    return res.json(bootcamp.courses);
   }
 );
 
