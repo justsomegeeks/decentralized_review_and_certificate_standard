@@ -6,8 +6,12 @@ import { getProvider } from "../../provider";
 import { useWallet } from "../WalletContext";
 import deployedAddresses from "../../helpers/deployedAddress.json";
 
+type GraduateArgs = {
+  courseAddress: string;
+  graduates: string[];
+};
 interface CourseState {
-  graduate?: (hash: string, cid: string) => void;
+  graduate?: ({ courseAddress, graduates }: GraduateArgs) => void;
   setCourseAddress?: React.Dispatch<React.SetStateAction<string>>;
 }
 const initialState: CourseState = {};
@@ -17,9 +21,10 @@ const CourseContext = React.createContext<CourseState>(initialState);
 type ProviderProps = {
   children: ReactNode;
 };
+
 export const CourseProvider = ({ children }: ProviderProps) => {
   const { walletAddress } = useWallet();
-  const [contract, setContract] = React.useState<Course>();
+  const [courseContract, setCourseContract] = React.useState<Course>();
   const [courseAddress, setCourseAddress] = React.useState(
     deployedAddresses.Course
   );
@@ -33,19 +38,19 @@ export const CourseProvider = ({ children }: ProviderProps) => {
         courseABI,
         signer
       ) as unknown as Course;
-      setContract(_contract);
+      setCourseContract(_contract);
     }
     if (walletAddress) {
       init();
     }
   }, [walletAddress, courseAddress]);
 
-  async function graduate() {
-    if (contract) {
+  async function graduate({ courseAddress, graduates }: GraduateArgs) {
+    if (courseContract) {
     }
   }
-  if (contract) {
-    contract.on("Graduate", () => {
+  if (courseContract) {
+    courseContract.on("Graduate", () => {
       // TODO: update state
     });
   }
