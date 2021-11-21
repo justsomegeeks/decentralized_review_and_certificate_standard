@@ -10,6 +10,7 @@ import uniqId from "uniqid";
 import { demoCourses, demoReviews } from "../demoData";
 import ReviewCard from "../components/cards/ReviewCard";
 import CourseCard from "../components/cards/CourseCard";
+import { RatingView } from "react-simple-star-rating";
 
 const BootcampDetailsPage = () => {
   const navigate = useNavigate();
@@ -68,14 +69,7 @@ const BootcampDetailsPage = () => {
             >
               Write a Review
             </button>
-            <p className="flex space-x-1 text-yellow-400">
-              {Array(Math.round(4.6))
-                .fill(1)
-                .map((_, i) => (
-                  <StarIcon key={uniqId()} className="h-5" />
-                ))}
-            </p>
-
+            <RatingView ratingValue={5} stars={5} />
             <div className="flex items-center">
               <AnnotationIcon className="h-5" />
               <p className="text-sm">102 reviews</p>

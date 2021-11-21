@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import Course from "./Course";
+import Bootcamp from "./Bootcamp";
 
 const Graduate = new mongoose.Schema(
   {
@@ -6,16 +8,16 @@ const Graduate = new mongoose.Schema(
       type: String,
       unique: true,
     },
-    proof: {
+    root: {
       type: String,
     },
     course: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Course",
+      ref: Course,
     },
     bootcamp: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Bootcamp",
+      ref: Bootcamp,
     },
   },
   { timestamps: true }

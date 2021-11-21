@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { course } from "./models";
+import Review from "./Review";
 
 const Course = new mongoose.Schema<course>({
   cid: {
@@ -19,7 +20,7 @@ const Course = new mongoose.Schema<course>({
       ref: "Graduate",
     },
   ],
-  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
+  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: Review }],
 });
 
 export default mongoose.models.Course || mongoose.model("Course", Course);

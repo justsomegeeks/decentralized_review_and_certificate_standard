@@ -1,5 +1,6 @@
 import { StarIcon } from "@heroicons/react/solid";
 import { useNavigate } from "react-router-dom";
+import { RatingView } from "react-simple-star-rating";
 import uniqId from "uniqid";
 import { joinClasses } from "../../helpers";
 type BootcampCardPropsType = {
@@ -17,6 +18,8 @@ const BootcampCard = ({
   bootcampAddress,
 }: BootcampCardPropsType) => {
   const navigate = useNavigate();
+  // TODO: cid = props
+  // Axios.get(ipfs.io/ipfs/cid)
   return (
     <div
       onClick={() => navigate(`/bootcamp/${bootcampAddress}`)}
@@ -46,13 +49,7 @@ const BootcampCard = ({
       >
         {name}
       </span>
-      <p className="flex space-x-1 text-yellow-400">
-        {Array(Math.round(stars))
-          .fill(1)
-          .map((_, i) => (
-            <StarIcon key={uniqId()} className="h-5" />
-          ))}
-      </p>
+      <RatingView ratingValue={5} stars={5} />
       <p
         className={joinClasses(
           "font-extralight",

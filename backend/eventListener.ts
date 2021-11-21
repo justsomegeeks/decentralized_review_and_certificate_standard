@@ -3,10 +3,17 @@ import mongoose from "mongoose";
 import { config } from "dotenv";
 
 // ARTIFACTS
-import courseArtifact from "../artifacts/contracts/Course.sol/Course.json";
-import bootcampArtifact from "../artifacts/contracts/Bootcamp.sol/Bootcamp.json";
-import reviewArtifact from "../artifacts/contracts/Review.sol/Review.json";
-import deployedAddresses from "../frontend/src/helpers/deployedAddress.json";
+import courseArtifact from "./artifacts/Course.json";
+import bootcampArtifact from "./artifacts/Bootcamp.json";
+import reviewArtifact from "./artifacts/Review.json";
+// import deployedAddresses from "../frontend/src/helpers/deployedAddress.json";
+const deployedAddresses = {
+  Greeter: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+  Bootcamp: "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+  Review: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+  Course: "0xCafac3dD18aC6c6e92c921884f9E4176737C052c",
+  CourseImpl: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+};
 
 // HELPERS
 import {
@@ -55,49 +62,49 @@ const courseContract = new ethers.Contract(
 (async () => {
   mongoose.connect(`${process.env.MONGO_URI}`, {}, async function () {
     console.log("Database connected successfuly");
-  });
+    // const currentBlockNumber = await provider.getBlockNumber();
+    await emptyDatabase();
 
-  //TODO:  Remove this on prod.
-  await emptyDatabase();
+    reviewContract.on("NewBootcamp", async (bootcampAddress) => {
+      console.log("New Bootcamp created");
+      const newBootcamp = new ethers.Contract(
+        bootcampAddress,
+        bootcampArtifact.abi,
+        provider
+      ) as unknown as Bootcamp;
+      const newBootCampCID = await newBootcamp.cid();
+      // TODO: Update Database
+      handleNewBootcamp(newBootcamp.address, newBootCampCID);
+      console.log(`NewBootcamp => bootcamp address:  ${bootcampAddress}`);
+    });
 
-  // const currentBlockNumber = await provider.getBlockNumber();
+    bootcampContract.on(
+      "CourseCreated",
+      (courseAddress, courseCID, bootcampAddress) => {
+        handleNewCourse(courseAddress, courseCID, bootcampAddress);
+        console.log(
+          `CourseCreated => course addresss: ${courseAddress}, course id: ${courseCID}, bootcamp id: ${bootcampAddress}`
+        );
+      }
+    );
 
-  bootcampContract.on(
-    "CourseCreated",
-    (courseAddress, courseCID, bootcampAddress) => {
-      handleNewCourse(courseAddress, courseCID, bootcampAddress);
+    courseContract.on("Graduate", async (merkelProof, courseCID) => {
+      handleGraduate(merkelProof, courseCID, courseContract.address);
       console.log(
-        `CourseCreated => course addresss: ${courseAddress}, course id: ${courseCID}, bootcamp id: ${bootcampAddress}`
+        `NewGraduate => proof: ${merkelProof}, course Id: ${courseCID}`
       );
-    }
-  );
+    });
 
-  courseContract.on("Graduate", async (merkelProof, courseCID) => {
-    handleGraduate(merkelProof, courseCID, courseContract.address);
-    console.log(`NewGraduate => proof: ${merkelProof}, course Id: ${courseCID}`);
+    reviewContract.on(
+      "NewReview",
+      async (courseAddress, reviewer, reviewURI, rating) => {
+        handleNewReview(courseAddress, reviewer, reviewURI, rating);
+        console.log(
+          `New Review => course address: ${courseAddress}, reviewer: ${reviewer}, rewviewUri: ${reviewURI}, rating: ${rating}`
+        );
+      }
+    );
   });
-
-  reviewContract.on("NewBootcamp", async (bootcampAddress) => {
-    const newBootcamp = new ethers.Contract(
-      bootcampAddress,
-      bootcampArtifact.abi,
-      provider
-    ) as unknown as Bootcamp;
-    const newBootCampCID = await newBootcamp.cid();
-
-    handleNewBootcamp(newBootcamp.address, newBootCampCID);
-    console.log(`NewBootcamp => bootcamp address:  ${bootcampAddress}`);
-  });
-
-  reviewContract.on(
-    "NewReview",
-    async (courseAddress, reviewer, reviewURI, rating) => {
-      handleNewReview(courseAddress, reviewer, reviewURI, rating);
-      console.log(
-        `New Review => course address: ${courseAddress}, reviewer: ${reviewer}, rewviewUri: ${reviewURI}, rating: ${rating}`
-      );
-    }
-  );
 
   // let recordedBlock = await Block.findOne({
   //   name: "LastRecorded",

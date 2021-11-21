@@ -26,8 +26,7 @@ export const handleNewBootcamp = async (
   newBootcampAddress: string,
   newBootcampCID: string
 ) => {
-  const bootcampData = await IPFS.get(newBootcampCID);
-  const bootcamp = Bootcamp.create({
+  await Bootcamp.create({
     cid: newBootcampCID,
     address: newBootcampAddress,
   });
@@ -58,7 +57,7 @@ export const handleNewReview = async (
 };
 
 export const handleGraduate = async (
-  proof: string,
+  root: string,
   courseCID: string,
   courseAddress: string
 ) => {
@@ -70,7 +69,7 @@ export const handleGraduate = async (
       const graduation = await Graduate.create({
         cid: courseCID,
         address: courseAddress,
-        proof: proof,
+        root: root,
         bootcamp: course.bootcamp,
       });
       await course.updateOne({ $push: { graduations: graduation } });

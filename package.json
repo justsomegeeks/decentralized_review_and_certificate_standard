@@ -53,6 +53,7 @@
     "babel-eslint": "^10.1.0",
     "dotenv": "^10.0.0",
     "fs-extra": "^10.0.0",
+    "ipfs-http-client": "^54.0.1",
     "react-simple-star-rating": "^3.0.0"
   }
 }

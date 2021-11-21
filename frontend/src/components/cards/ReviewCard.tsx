@@ -1,7 +1,6 @@
-import uniqId from "uniqid";
-import { StarIcon } from "@heroicons/react/solid";
 import { joinClasses } from "../../helpers";
 import ReviewDescription from "../ReviewDescription";
+import { RatingView } from "react-simple-star-rating";
 type ReviewCardPropsType = {
   name: string;
   completedDate: string;
@@ -34,13 +33,7 @@ const ReviewCard = ({
       <div className="border-b border-gray-200 ">
         <p>
           <h3 className="text-left">Rating</h3>
-          <p className="flex text-yellow-400">
-            {Array(Math.round(rating))
-              .fill(1)
-              .map((_, i) => (
-                <StarIcon key={uniqId()} className="h-5" />
-              ))}
-          </p>
+          <RatingView ratingValue={5} stars={5} />
         </p>
         <p></p>
         <p></p>

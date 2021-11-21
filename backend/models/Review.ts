@@ -3,11 +3,13 @@ import mongoose from "mongoose";
 type review = {
   cid: string;
   reviewer: string;
-  title: string;
-  body: string;
+  // title: string;
+  // body: string;
   overallRating: number;
   // cirriculumRating: number
   // jobSupportRating: number
+  bootcampAddress: string;
+  courseAddress: string;
 };
 
 const Review = new mongoose.Schema<review>(
@@ -28,6 +30,12 @@ const Review = new mongoose.Schema<review>(
     // },
     overallRating: {
       type: Number,
+    },
+    bootcampAddress: {
+      type: String,
+    },
+    courseAddress: {
+      type: String,
     },
     // TODO: Commented for the shake of hackathon.
     // cirriculumRating: {

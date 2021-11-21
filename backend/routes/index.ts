@@ -1,14 +1,12 @@
 import express, { Response, Request } from "express";
 import Bootcamp from "../models/Bootcamp";
+import Review from "../models/Review";
 
 const router = express.Router();
 
 // GET ALL BOOTCAMPS
-router.get("/bootcamps", (_: Request, res: Response) => {
-  const bootcamps = Bootcamp.find({})
-    .populate("courses")
-    .populate("reviews")
-    .exec();
+router.get("/bootcamps", async (_: Request, res: Response) => {
+  const bootcamps = await Bootcamp.find({}).populate("courses").exec();
   return res.json({
     request: bootcamps,
   });
@@ -36,11 +34,32 @@ router.get(
 router.get(
   "/bootcamps/:bootcampAddress/reviews",
   async (req: Request, res: Response) => {
-    const bootcamp = await Bootcamp.findOne({
-      address: req.params.bootcampAddress,
+    console.log();
+    const { bootcampAddress } = req.params;
+    const reviews = await Review.find({
+      bootcampAddress,
     });
     return res.json({
-      request: bootcamp.reviews,
+      request: reviews,
+    });
+  }
+);
+// GET Average rating
+router.get(
+  "/bootcamps/:bootcampAddress/averageRating",
+  async (req: Request, res: Response) => {
+    const { bootcampAddress } = req.params;
+    const reviews = await Review.find({
+      bootcampAddress,
+    });
+    const averageRating =
+      reviews.reduce(
+        (acculumate, review) => acculumate + review.overallRating,
+        0
+      ) / reviews.length;
+
+    res.json({
+      rating: averageRating,
     });
   }
 );
