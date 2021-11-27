@@ -1,4 +1,3 @@
-import "@nomiclabs/hardhat-ethers";
 import { ethers } from "hardhat";
 import { MerkleTree } from "merkletreejs";
 import keccak256 from "keccak256";
