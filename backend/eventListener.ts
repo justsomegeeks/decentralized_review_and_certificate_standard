@@ -18,20 +18,20 @@ import handleUpdateBlock from "./helpers/handleUpdateBlock";
 
 config();
 
-const provider = new ethers.providers.JsonRpcProvider("http://localhost:8545/");
+const provider = new ethers.providers.WebSocketProvider("http://localhost:8545/");
 
 const reviewContract = new ethers.Contract(
-  '0x9fe46736679d2d9a65f0992f2272de9f3c7fa6e0',
+  deployedAddresses.Review,
   reviewArtifact.abi,
   provider
 );
 const bootcampContract = new ethers.Contract(
-  '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512',
+  deployedAddresses.Bootcamp,
   bootcampArtifact.abi,
   provider
 );
 const courseContract = new ethers.Contract(
-  '0x5fbdb2315678afecb367f032d93f642f64180aa3',
+  deployedAddresses.Course,
   courseArtifact.abi,
   provider
 );

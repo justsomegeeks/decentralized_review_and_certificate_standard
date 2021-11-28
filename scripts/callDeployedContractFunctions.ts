@@ -5,73 +5,83 @@ import { Bootcamp, Course, Review } from "../typechain";
 import { CIDS } from "../helpers/constants";
 import deployedAddresses from "../frontend/src/helpers/deployedAddress.json";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/dist/src/signer-with-address";
+import { saveDeployedAddress } from "../frontend/src/helpers/saveAddress";
 
-let students: string[];
-let signer1: SignerWithAddress;
-let merkleTree: MerkleTree;
-let root: string;
-let leaf: string;
-let proof: string[];
-let bootcampContract: Bootcamp;
-let reviewContract: Review;
-let courseContract: Course;
-const RATING = ethers.utils.parseUnits("5", 2);
+async function main() {
 
-async function init() {
-  bootcampContract = (await ethers.getContractAt(
+  const students = await ethers.provider.listAccounts();
+  const merkleTree = new MerkleTree(students, keccak256, {
+    hashLeaves: true,
+    sortPairs: true,
+  });
+  const root = merkleTree.getHexRoot();
+  const leaf = keccak256(students[0]);
+  const proof = merkleTree.getHexProof(leaf);
+  const RATING = ethers.utils.parseUnits("5", 2);
+
+  const bootcampContract = (await ethers.getContractAt(
     "Bootcamp",
     deployedAddresses.Bootcamp
   )) as unknown as Bootcamp;
-  reviewContract = (await ethers.getContractAt(
+  const reviewContract = (await ethers.getContractAt(
     "Review",
     deployedAddresses.Review
   )) as unknown as Review;
-  courseContract = (await ethers.getContractAt(
+  const courseContract = (await ethers.getContractAt(
     "Course",
     deployedAddresses.Course
   )) as unknown as Course;
 
-  students = await ethers.provider.listAccounts();
-  //console.log(students);
+  await ethers.provider.send("evm_increaseTime", [5 * 24 * 60 * 60]); // 5 days
 
-  [signer1] = await ethers.getSigners();
+  // ADD A BOOTCAMP SO THAT REVIEW PROTOCOL KEEPS RECORD OF IT
+  const addBootcamp = await reviewContract.addBootcamp(
+    bootcampContract.address
+  );
+  console.log("-> Added new bootcamp to a review protocol");
 
-  merkleTree = new MerkleTree(students, keccak256, {
-    hashLeaves: true,
-    sortPairs: true,
-  });
-  root = merkleTree.getHexRoot();
-  leaf = keccak256(students[0]);
-  proof = merkleTree.getHexProof(leaf);
+  await ethers.provider.send("evm_increaseTime", [5 * 24 * 60 * 60]); // 5 days
+
+  // NEWLY CREATED COURSE IN A BOOTCAMP
+  const createdContractAddress =
+    "0x" +
+    keccak256(ethers.utils.RLP.encode([bootcampContract.address, "0x01"]))
+      .toString("hex")
+      .slice(-40);
+
+  const createdCourse = (await ethers.getContractAt(
+    "Course",
+    ethers.utils.getAddress(createdContractAddress)
+  )) as unknown as Course;
+
+  const createCourse = await bootcampContract.createCourse(CIDS.course);
+
+  console.log("-> Created Course deployed to:", createdCourse.address);
+  console.log("\t- Owner of created course:", await createdCourse.owner());
+
+  saveDeployedAddress({ contractName: "Course", contract: createdCourse });
+
+  await ethers.provider.send("evm_increaseTime", [5 * 24 * 60 * 60]); // 5 days
+
+  const graduate = await createdCourse.graduate(root, CIDS.graduation);
+  console.log("-> Graduate students from the course");
+
+  await ethers.provider.send("evm_increaseTime", [5 * 24 * 60 * 60]); // 5 days
+
+  const reviewCourse = await reviewContract.reviewCourse(
+    createdCourse.address,
+    CIDS.review,
+    RATING,
+    proof,
+    root
+  );
+
+  console.log("-> Review added to course:", createdCourse.address);
 }
 
-async function createACourse() {
-  await bootcampContract.createCourse(CIDS.course);
-}
-
-async function graduateStudents() {
-  await courseContract.graduate(root, CIDS.graduation);
-}
-
-async function addABootcamp() {
-  await reviewContract.addBootcamp(deployedAddresses.Bootcamp);
-}
-
-async function writeAReview() {
-  await reviewContract
-    .connect(signer1)
-    .reviewCourse(courseContract.address, CIDS.review, RATING, proof, root);
-}
-
-async function main() {
-  console.log("\n");
-  await init();
-  // await addABootcamp();
-  //await graduateStudents();
-  await createACourse();
-  //await writeAReview();
-}
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+main()
+    .then(() => process.exit(0))
+    .catch((error) => {
+        console.error(error);
+        process.exit(1);
+    });
