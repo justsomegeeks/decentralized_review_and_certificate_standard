@@ -20,6 +20,16 @@ const func: DeployFunction = async function () {
   // -----------------------
   const [deployer] = await ethers.getSigners();
 
+  const students = await ethers.provider.listAccounts();
+  const merkleTree = new MerkleTree(students, keccak256, {
+    hashLeaves: true,
+    sortPairs: true,
+  });
+  const root = merkleTree.getHexRoot();
+  const leaf = keccak256(students[0]);
+  const proof = merkleTree.getHexProof(leaf);
+  const RATING = ethers.utils.parseUnits("5", 2);
+
   console.log('');
   console.log('-'.repeat(80))
   // --------------------------------------
