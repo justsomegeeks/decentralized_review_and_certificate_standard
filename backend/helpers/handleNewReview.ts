@@ -4,7 +4,6 @@ import { create } from "ipfs-http-client";
 
 const IPFS = create({ url: "https://infura.io:5001" });
 
-
 export default async function handleNewReview(
   courseAddress: string,
   reiewer: string,
@@ -27,4 +26,4 @@ export default async function handleNewReview(
   } catch (err) {
     console.log(err);
   }
-};
+}

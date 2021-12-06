@@ -33,4 +33,4 @@ export default async function handleGraduate(
       throw new Error("Bootcamp Not Found");
     }
   }
-};
+}

@@ -30,17 +30,18 @@ router.get(
 router.get(
   "/bootcamps/:bootcampAddress/reviews",
   async (req: Request, res: Response) => {
-    console.log();
     const { bootcampAddress } = req.params;
-    const reviews = await Review.find({
+    const bootcamp = await Bootcamp.findOne({
       bootcampAddress,
-    });
-    return res.json(reviews);
+    })
+      .populate("reviews")
+      .exec();
+    return res.json(bootcamp.reviews);
   }
 );
 // GET Average rating
 router.get(
-  "/bootcamps/:bootcampAddress/averageRating",
+  "/bootcamps/:bootcampAddress/ratings",
   async (req: Request, res: Response) => {
     const { bootcampAddress } = req.params;
     const reviews = await Review.find({
@@ -54,6 +55,7 @@ router.get(
 
     res.json({
       rating: averageRating,
+      count: reviews.length,
     });
   }
 );
@@ -63,7 +65,7 @@ router.get(
   "/bootcamps/:bootcampAddress/courses",
   async (req: Request, res: Response) => {
     const bootcamp = await Bootcamp.findOne({
-      address: req.params.bootcampAddress,
+      bootcampAddress: req.params.bootcampAddress,
     })
       .populate("courses")
       .exec();

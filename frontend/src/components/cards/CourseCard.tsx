@@ -1,41 +1,55 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { joinClasses } from "../../helpers";
 
-type CoursesCardPropsType = {
+type CourseDetailsType = {
   name: string;
+  cost: string;
   duration: string;
-  price: string;
 };
-const CourseCard = ({ name, duration, price }: CoursesCardPropsType) => {
+type CourseCardProps = {
+  cid: string;
+  address: string;
+};
+
+const CourseCard = ({ cid }: CourseCardProps) => {
+  const [courseDetails, setCourseDetails] = useState<CourseDetailsType>();
   const handleCardClick = () => {
     // your  logic
   };
+  useEffect(() => {
+    // TODO: FetchCid and populate details
+    async function init() {
+      const res = await axios.get(`https://ipfs.io/ipfs/${cid}`);
+      setCourseDetails(res.data as CourseDetailsType);
+    }
+    init();
+  }, [cid]);
   return (
     <div
       onClick={handleCardClick}
       className={joinClasses(
-        "grid ",
-        "grid-cols-3 ",
-        "mb-10",
+        "flex",
+        "justify-between",
+        "p-10",
         "cursor-pointer",
         "bg-gray-100",
         "rounded-sm ",
-        "p-7",
         "hover:bg-white",
         "transition ",
         "delay-150",
         "ease-out"
       )}
     >
-      <p>
-        Name:
-        <span className="course-card-data">{name}</span>"
-      </p>
-      <p>
-        Duration: <span className="course-card-data">{duration}</span>
-      </p>
-      <p>
-        Price: <span className="course-card-data">{price}</span>
-      </p>
+      {courseDetails ? (
+        <>
+          <div>Name: {courseDetails.name}</div>
+          <div>Duration: {courseDetails.duration}</div>
+          <div>Price: {courseDetails.cost}</div>
+        </>
+      ) : (
+        "loading....."
+      )}
     </div>
   );
 };

@@ -4,7 +4,7 @@ import { create } from "ipfs-http-client";
 
 const IPFS = create({ url: "https://infura.io:5001" });
 
-export default async function handleNewCourse (
+export default async function handleNewCourse(
   courseAddress: string,
   courseCID: string,
   bootcampAddress: string
@@ -30,4 +30,4 @@ export default async function handleNewCourse (
   } else {
     throw new Error("Bootcamp not found");
   }
-};
+}

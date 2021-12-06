@@ -1,12 +1,13 @@
 import mongoose from "mongoose";
 
-export type Bootcamp = {
+export type BootcampSchemaType = {
   cid: string;
-  address: string;
+  bootcampAddress: string;
   name: string;
   description: string;
   location: string;
   courses: mongoose.Schema.Types.ObjectId;
+  reviews: mongoose.Schema.Types.ObjectId;
   rating: number;
 };
 

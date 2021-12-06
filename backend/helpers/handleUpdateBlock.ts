@@ -21,4 +21,4 @@ export default async function handleUpdateBlock(blockNumber: number) {
     console.log(err);
     console.log("Unable to create or update!");
   }
-};
+}

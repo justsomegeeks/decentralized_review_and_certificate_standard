@@ -1,9 +1,21 @@
-import BootcampCard from "./cards/BootcampCard";
-
+import { useEffect, useState } from "react";
 import uniqId from "uniqid";
-import { demoBootcamps } from "../demoData";
-import { joinClasses } from "../helpers";
+import axios from "axios";
+
+import BootcampCard from "./cards/BootcampCard";
+import { joinClasses, SERVER } from "../helpers";
+
 const BootcampsDisplay = () => {
+  const [bootcamps, setBootcamps] = useState<any[]>([]);
+  useEffect(() => {
+    async function init() {
+      const res = await axios.get(SERVER + "/bootcamps");
+      console.log(res.data);
+      const _bootcamps = new Array(4).fill(res.data[0]);
+      setBootcamps(_bootcamps);
+    }
+    init();
+  }, []);
   return (
     <div className="max-w-5xl m-10 mx-auto">
       <h1
@@ -26,18 +38,13 @@ const BootcampsDisplay = () => {
           "xl:grid-cols-4"
         )}
       >
-        {demoBootcamps.map(
-          ({ name, stars, mode, subjects, bootcampAddress }) => (
-            <BootcampCard
-              key={uniqId()}
-              name={name}
-              stars={stars}
-              mode={mode}
-              subjects={subjects}
-              bootcampAddress={bootcampAddress}
-            />
-          )
-        )}
+        {bootcamps.map(({ bootcampAddress, cid }) => (
+          <BootcampCard
+            key={uniqId()}
+            cid={cid}
+            bootcampAddress={bootcampAddress}
+          />
+        ))}
       </div>
     </div>
   );

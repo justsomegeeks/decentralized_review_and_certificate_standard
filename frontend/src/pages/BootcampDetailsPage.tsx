@@ -1,20 +1,56 @@
 import { LocationMarkerIcon } from "@heroicons/react/outline";
-import { joinClasses } from "../helpers/index";
+import { joinClasses, SERVER } from "../helpers/index";
 import { useNavigate } from "react-router-dom";
-import {
-  StarIcon,
-  AnnotationIcon,
-  ShieldCheckIcon,
-} from "@heroicons/react/solid";
-import uniqId from "uniqid";
-import { demoCourses, demoReviews } from "../demoData";
-import ReviewCard from "../components/cards/ReviewCard";
+import { AnnotationIcon, ShieldCheckIcon } from "@heroicons/react/solid";
 import CourseCard from "../components/cards/CourseCard";
 import { RatingView } from "react-simple-star-rating";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router";
+import axios from "axios";
+import Reviews from "../components/Reviews";
+import Courses from "../components/Courses";
+
+type BootcampPropsType = {
+  cid: string;
+};
+type BootcampInfo = {
+  name: string;
+  rating: number;
+  ratingCount: number;
+  location: string;
+  about: string;
+};
+type RatingDetails = {
+  rating: number;
+  count: number;
+};
 
 const BootcampDetailsPage = () => {
   const navigate = useNavigate();
+  const [bootcampInfo, setBootcampInfo] = useState<BootcampInfo>();
+  const [ratingDetails, setRatingDetails] = useState<RatingDetails>();
+  const params = useParams();
+  console.log(params);
+
+  useEffect(() => {
+    async function init() {
+      const { cid } = (
+        await axios.get(`${SERVER}/bootcamps/${params.bootcampAddress}`)
+      ).data as BootcampPropsType;
+      const response = await axios.get(`https://ipfs.io/ipfs/${cid}`);
+      const _bootcampDetails = response.data as BootcampInfo;
+      setBootcampInfo(_bootcampDetails);
+      const ratingRes = await axios.get(
+        `${SERVER}/bootcamps/${params.bootcampAddress}/ratings`
+      );
+      const _ratingDetails = ratingRes.data as RatingDetails;
+      setRatingDetails(_ratingDetails);
+    }
+    init();
+  }, [params]);
+
   const handleWriteReview = () => {
+    // TODO: write review
     navigate(`${window.location.pathname}/review`);
   };
   return (
@@ -30,27 +66,31 @@ const BootcampDetailsPage = () => {
             "p-10"
           )}
         >
-          <div className="flex items-center justify-around">
-            <img src="/images/Logo.png" width={150} height={150} alt="logo" />
+          <div className="flex items-center justify-between my-2">
+            <img
+              src="/images/bootcamp.jpg"
+              width={150}
+              height={150}
+              alt="logo"
+            />
             <div>
               <h1
                 className={joinClasses(
                   "font-bold",
                   "text-4xl",
-                  "text-gray-600",
-                  "pb-3"
+                  "text-gray-600"
                 )}
               >
-                The Software Guild
+                {bootcampInfo?.name}
               </h1>
               <p className="flex text-sm">
                 <LocationMarkerIcon className="h-6" />
-                online
+                {bootcampInfo?.location}
               </p>
             </div>
           </div>
 
-          <div className="flex items-center justify-around">
+          <div className="flex items-center justify-between">
             <button
               onClick={handleWriteReview}
               className={joinClasses(
@@ -69,10 +109,13 @@ const BootcampDetailsPage = () => {
             >
               Write a Review
             </button>
-            <RatingView ratingValue={5} stars={5} />
-            <div className="flex items-center">
-              <AnnotationIcon className="h-5" />
-              <p className="text-sm">102 reviews</p>
+
+            <div className="flex flex-col items-center justify-center">
+              <RatingView ratingValue={ratingDetails?.rating || 0} />
+              <div className="flex">
+                <AnnotationIcon className="h-5" />
+                <div className="text-sm">{ratingDetails?.count} reviews</div>
+              </div>
             </div>
           </div>
         </div>
@@ -86,7 +129,7 @@ const BootcampDetailsPage = () => {
               <LocationMarkerIcon className="h-5" />
               <p>
                 <span>Location:</span>
-                <span>Online</span>
+                <span>{bootcampInfo?.location}</span>
               </p>
             </div>
             <div className="flex space-x-3">
@@ -110,71 +153,12 @@ const BootcampDetailsPage = () => {
               "shadow-md"
             )}
           >
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe
-              perferendis et quos accusantium totam laudantium illo, magnam
-              reiciendis similique blanditiis ex aut, pariatur dolores minus
-              odio fugiat dolorum at quia ratione doloribus tenetur fuga eos
-              ipsa. Porro suscipit aliquid eaque recusandae natus
-              necessitatibus, omnis a similique deleniti excepturi? Voluptate
-              excepturi enim odit, officiis accusantium consectetur sapiente
-              dicta nisi libero consequuntur rem cumque quos, quis nemo vitae
-              voluptatibus magni error nulla omnis ea vel ipsum, neque ex? Fuga
-              inventore hic blanditiis earum sapiente placeat cupiditate
-              consequatur voluptatem iusto nobis, ducimus quos incidunt totam
-              veritatis quasi tempore tenetur? Ex hic voluptatibus amet.
-            </p>
+            <p>{bootcampInfo?.about}</p>
           </div>
           {/* courses */}
-          <div
-            className={joinClasses(
-              "p-5",
-              "bg-gray-50",
-              "h-80",
-              "overflow-scroll",
-              "scrollbar-hide"
-            )}
-          >
-            <h1 className="heading">Courses</h1>
-            {demoCourses.map(({ name, price, duration }) => (
-              <CourseCard
-                key={uniqId()}
-                name={name}
-                price={price}
-                duration={duration}
-              />
-            ))}
-          </div>
+          <Courses bootcampAddress={params.bootcampAddress as string} />
           {/* reviews */}
-          <section className="max-w-5xl py-10 mx-auto ">
-            <h1 className="heading">Students Reviews</h1>
-            {!demoReviews ? (
-              <h1>Bootcamp dont have any reviews</h1>
-            ) : (
-              <div className="grid grid-cols-2 gap-5 ">
-                {demoReviews?.map(
-                  ({
-                    name,
-                    completedDate,
-                    reviewDate,
-                    overallStar,
-                    reviewTitle,
-                    description,
-                  }) => (
-                    <ReviewCard
-                      key={uniqId()}
-                      name={name}
-                      completedDate={completedDate}
-                      reviewDate={reviewDate}
-                      rating={overallStar}
-                      reviewTitle={reviewTitle}
-                      description={description}
-                    />
-                  )
-                )}
-              </div>
-            )}
-          </section>
+          <Reviews bootcampAddress={params.bootcampAddress as string} />
         </div>
       </section>
     </>

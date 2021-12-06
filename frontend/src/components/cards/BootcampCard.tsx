@@ -1,25 +1,29 @@
-import { StarIcon } from "@heroicons/react/solid";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { RatingView } from "react-simple-star-rating";
-import uniqId from "uniqid";
 import { joinClasses } from "../../helpers";
 type BootcampCardPropsType = {
-  name: string;
-  mode: string;
-  stars: number;
-  subjects: string;
   bootcampAddress: string;
+  cid: string;
 };
-const BootcampCard = ({
-  name,
-  mode,
-  stars,
-  subjects,
-  bootcampAddress,
-}: BootcampCardPropsType) => {
+type CardData = {
+  name: string;
+  about: string;
+  location: string;
+};
+const BootcampCard = ({ cid, bootcampAddress }: BootcampCardPropsType) => {
+  console.log({ cid, bootcampAddress });
+  const [cardData, setCardData] = useState<CardData>();
   const navigate = useNavigate();
-  // TODO: cid = props
-  // Axios.get(ipfs.io/ipfs/cid)
+
+  useEffect(() => {
+    async function init() {
+      const res = await axios.get(`https://ipfs.io/ipfs/${cid}`);
+      setCardData(res.data);
+    }
+    init();
+  }, [cid]);
   return (
     <div
       onClick={() => navigate(`/bootcamp/${bootcampAddress}`)}
@@ -47,9 +51,11 @@ const BootcampCard = ({
           "hover:underline"
         )}
       >
-        {name}
+        {cardData?.name}
       </span>
-      <RatingView ratingValue={5} stars={5} />
+      <p className="flex space-x-1 text-yellow-400">
+        <RatingView ratingValue={5} />
+      </p>
       <p
         className={joinClasses(
           "font-extralight",
@@ -59,9 +65,9 @@ const BootcampCard = ({
           "text-center"
         )}
       >
-        {subjects}
+        {cardData?.about.slice(0, 60)}
       </p>
-      <p className="font-light">{mode}</p>
+      <p className="font-light">{cardData?.location}</p>
     </div>
   );
 };

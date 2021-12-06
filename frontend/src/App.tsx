@@ -36,11 +36,20 @@ function App() {
         <div className="h-full">
           <Routes>
             <Route path="/" element={<Homepage />}></Route>
-            <Route path={"bootcamp/:id/review"} element={<ReviewPage />} />
-            <Route path="/bootcamp/:id" element={<BootcampDetailsPage />} />
+            <Route
+              path={"bootcamp/:bootcampAddress/review"}
+              element={<ReviewPage />}
+            />
+            <Route
+              path="/bootcamp/:bootcampAddress"
+              element={<BootcampDetailsPage />}
+            />
             <Route path="/newCourse" element={<NewCoursePage />} />
             <Route path="/newBootcamp" element={<NewBootcampPage />} />
-            <Route path="/newBootcamp/:id" element={<NewBootcampPage />} />
+            <Route
+              path="/newBootcamp/:bootcampAddress"
+              element={<NewBootcampPage />}
+            />
           </Routes>
         </div>
         <Footer />
