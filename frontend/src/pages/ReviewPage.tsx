@@ -1,62 +1,28 @@
 import { useState } from "react";
-import { Rating, RatingView } from "react-simple-star-rating";
-import { useNavigate } from "react-router-dom";
-import { useMessage } from "../context/MessageContext";
+import { Rating } from "react-simple-star-rating";
 import { joinClasses } from "../helpers";
+import { useReview } from "../context/ReviewContext";
 const ReviewPage = () => {
-  const navigate = useNavigate();
-  const { setGlobalMessage } = useMessage();
-  const [reviewFormInput, setReviewFormInput] = useState<any>({
-    fullName: "",
-    email: "",
-    profession: "",
-    reviewTitle: "",
-    reviewDescription: "",
-    rating: 0,
-    school: "",
-    course: "",
-    finishYear: "",
-  });
-  const handleInputChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    let { name, value } = e.target;
-
-    setReviewFormInput({
-      ...reviewFormInput,
-      [name]: value,
-    });
-  };
-  const handleRating = (rating: number) => {
-    console.log(rating);
-    setReviewFormInput({
-      ...reviewFormInput,
-      rating,
-    });
-  };
-  const handleFormSubmit = () => {
-    setReviewFormInput({
-      fullName: "",
-      email: "",
-      profession: "",
-      reviewTitle: "",
-      reviewDescription: "",
-      rating: 0,
-      school: "",
-      course: "",
-      finishYear: "",
-    });
-    navigate(-1);
-    setGlobalMessage({
-      message: "Your review has been submitted succesfully",
-      type: "success",
-    });
-    setTimeout(() => {
-      setGlobalMessage({});
-    }, 5000);
-    // TODO: push routes to the bootcamps/bootcampAddress page
+  const [reviewer, setReviewer] = useState("");
+  const [email, setEmail] = useState("");
+  const [title, setTitle] = useState("");
+  const [body, setBody] = useState("");
+  const [rating, setRating] = useState(0);
+  const [batch] = useState("Dec 2021");
+  const [course] = useState("Solidity Developer");
+  const { txPending, reviewCourse } = useReview();
+  const handleFormSubmit = async () => {
+    if (reviewCourse) {
+      reviewCourse({
+        batch,
+        course,
+        reviewer,
+        email,
+        title,
+        body,
+        rating,
+      });
+    }
   };
   return (
     <>
@@ -67,7 +33,8 @@ const ReviewPage = () => {
             "text-center",
             "p-10",
             "bg-gray-100",
-            "mt-3"
+            "mt-3",
+            "rounded"
           )}
         >
           {" "}
@@ -77,51 +44,42 @@ const ReviewPage = () => {
           Honest feedback on bootcamps will help us build new money legos that
           will redefine how skill markets work now.
         </h1>
-        <div className="p-10 mt-10 bg-gray-100 border">
-          <div className="flex gap-4 ">
+        <div className="p-10 mt-10 bg-gray-100 border rounded">
+          <div className="flex justify-between">
             <div>
-              <label htmlFor="j"> Full Name</label>
+              <label htmlFor="name"> Full Name</label>
+              <br />
               <input
-                onChange={handleInputChange}
-                name="fullName"
-                value={reviewFormInput.fullName}
+                onChange={(e) => setReviewer(e.target.value)}
+                name="name"
+                value={reviewer}
                 type="text"
                 className="inputField"
-                placeholder="Enter full name"
+                placeholder="name"
               />
             </div>
             <div>
               <label htmlFor="email"> Email</label>
+              <br />
               <input
-                onChange={handleInputChange}
-                value={reviewFormInput.email}
+                onChange={(e) => setEmail(e.target.value)}
+                value={email}
                 name="email"
                 type="email"
                 className="inputField"
-                placeholder="Enter email address"
-              />
-            </div>
-            <div>
-              <label htmlFor="profession"> Profession</label>
-              <input
-                onChange={handleInputChange}
-                value={reviewFormInput.profession}
-                name="profession"
-                type="text"
-                className="inputField"
-                placeholder="e.g Software Engineer,Designer etc"
+                placeholder="email"
               />
             </div>
           </div>
           <div className="mt-5 ">
-            <label htmlFor="reviewTitle">Review Title</label>
+            <label htmlFor="reviewTitle">Title</label>
             <input
-              onChange={handleInputChange}
-              value={reviewFormInput.reviewTitle}
-              name="reviewTitle"
+              onChange={(e) => setTitle(e.target.value)}
+              value={title}
+              name="title"
               className="w-full inputField "
               type="text"
-              placeholder="In one sentense, describe your experience"
+              placeholder="Describe your experience in one sentence"
             />
           </div>
           <div className="my-5">
@@ -130,9 +88,9 @@ const ReviewPage = () => {
             </label>
             <br />
             <textarea
-              name="reviewDescription"
-              value={reviewFormInput.reviewDescription}
-              onChange={handleInputChange}
+              name="body"
+              value={body}
+              onChange={(e) => setBody(e.target.value)}
               rows={10}
               className="w-full p-5 border-2 border-gray-300"
               placeholder="What are the pros and cons of attending this bootcap? Share your story"
@@ -142,62 +100,24 @@ const ReviewPage = () => {
             <h1 className="pb-4">How would you rate your expierence</h1>
             <div className="">
               <Rating
-                ratingValue={reviewFormInput.rating}
+                ratingValue={rating}
                 stars={5}
-                onClick={handleRating}
+                onClick={(value) => setRating(value)}
               />
             </div>
           </div>
           {/* school,location and course input */}
           <div className="flex justify-between mt-10">
             <div className="space-x-4">
-              <label htmlFor="">School</label>
-              <input
-                type="input"
-                value="Vidhya Bharati"
-                disabled
-                name="school"
-                className="select"
-              />
+              {/* TODO: update this */}
+              Bootcamp: Chainshot
             </div>
             <div className="space-x-4">
-              <label htmlFor="">Course</label>
-              <select
-                className="select"
-                onChange={handleInputChange}
-                value={reviewFormInput.course}
-                name="course"
-                id=""
-                placeholder="Course you did"
-              >
-                <option value="something">--select--</option>
-                <option value="something">something</option>
-                <option value="something">something</option>
-                <option value="something">something</option>
-                <option value="something">something</option>
-              </select>
+              {/* TODO: update this */}
+              Course: {course}
             </div>
-            <div className="space-x-4">
-              <label htmlFor="">Year </label>
-              <select
-                className="select"
-                onChange={handleInputChange}
-                value={reviewFormInput.finishYear}
-                name="finishYear"
-                id=""
-              >
-                <option value="none"> --select--</option>
-                <option value="2021">2021</option>
-                <option value="2020">2020</option>
-                <option value="2019">2019</option>
-              </select>
-            </div>
-          </div>
-          {/* radio button and year of completion */}
-          <div className="flex mt-10">
-            {/* radio buttons*/}
-
-            {/* year of completion */}
+            {/* TODO: update this */}
+            <div className="space-x-4">Batch: {batch}</div>
           </div>
           <div className="mt-10 text-center">
             <button
@@ -216,7 +136,7 @@ const ReviewPage = () => {
                 "focus:bg-red-100 "
               )}
             >
-              Submit
+              {txPending ? "Submitting..." : "Submit"}
             </button>
           </div>
         </div>

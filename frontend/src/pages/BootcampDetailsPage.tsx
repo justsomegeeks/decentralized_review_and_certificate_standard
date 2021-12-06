@@ -2,7 +2,6 @@ import { LocationMarkerIcon } from "@heroicons/react/outline";
 import { joinClasses, SERVER } from "../helpers/index";
 import { useNavigate } from "react-router-dom";
 import { AnnotationIcon, ShieldCheckIcon } from "@heroicons/react/solid";
-import CourseCard from "../components/cards/CourseCard";
 import { RatingView } from "react-simple-star-rating";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
@@ -123,7 +122,7 @@ const BootcampDetailsPage = () => {
       {/* second section */}
       <section>
         <div className="max-w-5xl p-10 mx-auto">
-          <h1 className="heading">About The Software Guild</h1>
+          <h1 className="capitalize heading">About The {bootcampInfo?.name}</h1>
           <div className="flex justify-between">
             <div className="flex space-x-3">
               <LocationMarkerIcon className="h-5" />

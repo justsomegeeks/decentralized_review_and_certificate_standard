@@ -33,12 +33,12 @@ config();
       cid: "QmSYfmDo5NiPS3ykHBEH71Y8d5ZgBDujGQJ6icFSvUCBaQ",
       overallRating: 500,
       reviewer: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
-      bootcampAddress: bootcamp.bootcampAddress,
+      courseAddress: course.address,
     });
     await course.updateOne({
       $push: { graduations: graduate },
     });
     await bootcamp.updateOne({ $push: { courses: course, reviews: review } });
+    console.log("Added dummy data to the database");
   });
-  console.log("Added dummy data to the database");
 })();

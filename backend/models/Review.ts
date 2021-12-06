@@ -4,6 +4,7 @@ type ReviewType = {
   cid: string;
   reviewer: string;
   overallRating: number;
+  courseAddress: string;
 };
 
 const Review = new mongoose.Schema<ReviewType>(
@@ -17,6 +18,9 @@ const Review = new mongoose.Schema<ReviewType>(
     },
     overallRating: {
       type: Number,
+    },
+    courseAddress: {
+      type: String,
     },
   },
   { timestamps: true }
