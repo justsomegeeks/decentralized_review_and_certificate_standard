@@ -59,6 +59,6 @@ describe("Bootcamp", async () => {
     );
     await expect(bootcamp.createCourse(CID))
       .to.emit(bootcamp, "CourseCreated")
-      .withArgs(clonedContractAddressWithChecksum, CID);
+      .withArgs(clonedContractAddressWithChecksum, CID, bootcamp.address);
   });
 });
