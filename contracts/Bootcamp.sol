@@ -8,13 +8,20 @@ import "./Course.sol";
 contract Bootcamp is Ownable {
     event CourseCreated(address courseAddress, string courseCID, address bootcamp);
     address immutable courseImplementationAddress;
-    // TODO: Should this be string or bytes32 for saving gas?
     string public cid;
     address[] public courses;
 
     constructor(address _courseImplementationAddress, string memory _cid) {
         cid = _cid;
         courseImplementationAddress = _courseImplementationAddress;
+    }
+
+    function getImplementationAddress() external view returns (address) {
+        return courseImplementationAddress;
+    }
+
+    function getCourses() external view returns (address[] memory) {
+        return courses;
     }
 
     function createCourse(string memory _courseCID)
@@ -25,15 +32,8 @@ contract Bootcamp is Ownable {
         address cloneAddress = Clones.clone(courseImplementationAddress);
         Course(cloneAddress).initialize(_courseCID, owner());
         courses.push(cloneAddress);
-        emit CourseCreated(cloneAddress, _courseCID, address(this));
+        emit CourseCreated(cloneAddress, _courseCID , address(this));
         return cloneAddress;
     }
 
-    function getImplementationAddress() external view returns (address) {
-        return courseImplementationAddress;
-    }
-
-    function getCourses() external view returns (address[] memory) {
-        return courses;
-    }
 }
