@@ -7,6 +7,9 @@ import "./Course.sol";
 contract Review is Ownable {
     address[] public bootcamps;
 
+    event NewBootcamp(address indexed bootcamp);
+    event NewReview(address indexed course, address indexed reviewer, string reviewURI, uint256 rating);
+
     function _bootcampExists(address bootcamp) internal view returns (bool) {
         address[] memory _bootcamps = bootcamps;
         for (uint256 i = 0; i < _bootcamps.length; i++) {
@@ -43,12 +46,4 @@ contract Review is Ownable {
         emit NewReview(courseAddress, msg.sender, reviewCID, rating);
     }
 
-    event NewBootcamp(address indexed bootcamp);
-
-    event NewReview(
-        address indexed course,
-        address indexed reviewer,
-        string reviewURI,
-        uint256 rating
-    );
 }

@@ -7,15 +7,11 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-
 contract Course is Initializable, OwnableUpgradeable {
-    // EVENTS
-    event Graduate(bytes32 merkelProof, string courseCID);
-
-    // STATE
     string private courseCID;
-    //      merkle proof => cid
     mapping(bytes32 => string) public graduations;
+
+    event Graduate(bytes32 merkelProof, string courseCID);
 
     function initialize(string memory _courseCID, address _owner)
         external
@@ -35,8 +31,6 @@ contract Course is Initializable, OwnableUpgradeable {
         return MerkleProofUpgradeable.verify(proof, root, leaf);
     }
 
-    // TODO: only owner should be allowed to call this function.
-    // Should owner be the Bootcamp contract or EOA?
     function graduate(bytes32 _hash, string memory _cid) external onlyOwner {
         graduations[_hash] = _cid;
         emit Graduate(_hash, _cid);

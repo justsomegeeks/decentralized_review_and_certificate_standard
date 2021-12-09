@@ -6,11 +6,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Course.sol";
 
 contract Bootcamp is Ownable {
-    event CourseCreated(address courseAddress, string courseCID, address bootcamp);
     address immutable courseImplementationAddress;
-    // TODO: Should this be string or bytes32 for saving gas?
-    string public cid;
     address[] public courses;
+    string public cid;
+
+    event CourseCreated(address courseAddress, string courseCID, address bootcamp);
 
     constructor(address _courseImplementationAddress, string memory _cid) {
         cid = _cid;

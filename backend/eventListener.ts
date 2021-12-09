@@ -18,7 +18,8 @@ import handleUpdateBlock from "./helpers/handleUpdateBlock";
 
 config();
 
-const provider = new ethers.providers.WebSocketProvider("http://localhost:8545/");
+// const provider = new ethers.providers.WebSocketProvider("http://localhost:8545/");
+const provider = new ethers.providers.JsonRpcProvider("https://ropsten.infura.io/v3/e5b09ad7b38347a788bd267798f76471");
 
 const reviewContract = new ethers.Contract(
   deployedAddresses.Review,
